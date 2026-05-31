@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "POS App",
+    "slug": "pos-app",
+    "version": "1.0.0",
+    "scheme": "posapp",
+    "platforms": ["android"],
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#6366f1"
+      },
+      "package": "com.posapp.epos"
+    },
+    "plugins": ["expo-router"]
+  }
+}
