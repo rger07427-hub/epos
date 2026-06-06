@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
+import { router } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useProductStore } from '../../store/useProductStore';
@@ -114,8 +115,16 @@ export default function AdminPOS() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>POS</Text>
-        <Text style={styles.branchName}>{profile?.branch?.name}</Text>
+        <View>
+          <Text style={styles.headerTitle}>POS</Text>
+          <Text style={styles.branchName}>{profile?.branch?.name}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => router.push('/(kasir)/history')}
+          style={styles.historyBtn}
+        >
+          <Text style={styles.historyBtnText}>📋 Riwayat</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Tab Switcher (untuk HP) */}
@@ -198,6 +207,17 @@ const styles = StyleSheet.create({
   branchName: {
     fontSize: 13,
     color: 'rgba(255,255,255,0.85)',
+  },
+  historyBtn: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  historyBtnText: {
+    color: Colors.white,
+    fontSize: 13,
+    fontWeight: '600',
   },
   tabRow: {
     flexDirection: 'row',

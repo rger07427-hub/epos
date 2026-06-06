@@ -42,10 +42,12 @@ export default function AdminDashboard() {
           <Text style={styles.menuLabel}>POS</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.menuItem, styles.menuDisabled]}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/(admin)/history')}
+        >
           <Text style={styles.menuIcon}>📋</Text>
           <Text style={styles.menuLabel}>Riwayat</Text>
-          <Text style={styles.menuSoon}>Segera</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.menuItem, styles.menuDisabled]}>
