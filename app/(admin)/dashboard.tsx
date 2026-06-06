@@ -50,10 +50,20 @@ export default function AdminDashboard() {
           <Text style={styles.menuLabel}>Riwayat</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.menuItem, styles.menuDisabled]}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/(admin)/reports/daily')}
+        >
           <Text style={styles.menuIcon}>📊</Text>
           <Text style={styles.menuLabel}>Laporan</Text>
-          <Text style={styles.menuSoon}>Segera</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/(admin)/reports/monthly')}
+        >
+          <Text style={styles.menuIcon}>📅</Text>
+          <Text style={styles.menuLabel}>Rekap Bulanan</Text>
         </TouchableOpacity>
       </View>
     </View>
