@@ -17,6 +17,7 @@ import { Category } from '../../../types';
 import { Colors } from '../../../constants/colors';
 import FormField from '../../../components/shared/FormField';
 import CategoryPicker from '../../../components/shared/CategoryPicker';
+import AppHeader from '../../../components/shared/AppHeader';
 
 interface FormData {
   name: string;
@@ -125,17 +126,7 @@ export default function AddProductScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Text style={styles.backText}>← Kembali</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Tambah Produk</Text>
-        <View style={{ width: 80 }} />
-      </View>
+      <AppHeader title="Tambah Produk" showBack />
 
       <ScrollView
         style={styles.scroll}
@@ -232,29 +223,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.gray[50],
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
-  },
-  backButton: {
-    width: 80,
-  },
-  backText: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
+
   scroll: {
     flex: 1,
   },

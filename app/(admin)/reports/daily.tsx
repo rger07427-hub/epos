@@ -14,6 +14,7 @@ import { supabase } from '../../../lib/supabase';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { Colors } from '../../../constants/colors';
 import Badge from '../../../components/shared/Badge';
+import AppHeader from '../../../components/shared/AppHeader';
 
 interface DailySummary {
   totalRevenue: number;
@@ -143,14 +144,7 @@ export default function DailyReportScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>← Kembali</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Laporan Harian</Text>
-        <View style={{ width: 80 }} />
-      </View>
+      <AppHeader title="Laporan Harian" showBack />
 
       {/* Navigasi Tanggal */}
       <View style={styles.dateNav}>
@@ -299,27 +293,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.gray[50],
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
-  },
-  backText: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '600',
-    width: 80,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
+
   dateNav: {
     flexDirection: 'row',
     alignItems: 'center',

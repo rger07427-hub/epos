@@ -14,6 +14,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useProductStore } from '../../store/useProductStore';
 import { useCartStore } from '../../store/useCartStore';
 import { Colors } from '../../constants/colors';
+import AppHeader from '../../components/shared/AppHeader';
 import ProductGrid from '../../components/pos/ProductGrid';
 import CartPanel from '../../components/pos/CartPanel';
 import PaymentModal from '../../components/pos/PaymentModal';
@@ -113,19 +114,10 @@ export default function AdminPOS() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>POS</Text>
-          <Text style={styles.branchName}>{profile?.branch?.name}</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => router.push('/(kasir)/history')}
-          style={styles.historyBtn}
-        >
-          <Text style={styles.historyBtnText}>📋 Riwayat</Text>
-        </TouchableOpacity>
-      </View>
+      <AppHeader
+        title="POS"
+        subtitle={`${profile?.full_name} · ${profile?.branch?.name}`}
+      />
 
       {/* Tab Switcher (untuk HP) */}
       <View style={styles.tabRow}>
@@ -191,34 +183,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.gray[50],
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: Colors.primary,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.white,
-  },
-  branchName: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.85)',
-  },
-  historyBtn: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  historyBtnText: {
-    color: Colors.white,
-    fontSize: 13,
-    fontWeight: '600',
-  },
+
   tabRow: {
     flexDirection: 'row',
     backgroundColor: Colors.white,

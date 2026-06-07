@@ -1,72 +1,135 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  RefreshControl,
+} from 'react-native';
+import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
+import AppHeader from '../../components/shared/AppHeader';
 
 export default function AdminDashboard() {
   const { profile, signOut } = useAuthStore();
+  const [todayStats, setTodayStats] = useState({
+    revenue: 0,
+    transactions: 0,
+    lowStock: 0,
+  });
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchStats = async () => {
+    if (!profile?.branch_id) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const startOfDay = `${today}T00:00:00`;
+    const endOfDay = `${today}T23:59:59`;
+
+    const [trxRes, stockRes] = await Promise.all([
+      supabase
+        .from('transactions')
+        .select('total')
+        .eq('branch_id', profile.branch_id)
+        .gte('created_at', startOfDay)
+        .lte('created_at', endOfDay),
+      supabase
+        .from('branch_stocks')
+        .select('stock')
+        .eq('branch_id', profile.branch_id)
+        .lte('stock', 5),
+    ]);
+
+    const revenue = trxRes.data?.reduce((s, t) => s + t.total, 0) ?? 0;
+    const transactions = trxRes.data?.length ?? 0;
+    const lowStock = stockRes.data?.length ?? 0;
+
+    setTodayStats({ revenue, transactions, lowStock });
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, [profile]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>
-            Halo, {profile?.full_name} 👋
-          </Text>
-          <Text style={styles.branch}>
-            📍 {profile?.branch?.name}
+    <SafeAreaView style={styles.container}>
+      <AppHeader
+        title="Dashboard"
+        subtitle={profile?.branch?.name}
+        rightAction={{
+          label: 'Keluar',
+          onPress: signOut,
+          color: '#fca5a5',
+        }}
+      />
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              fetchStats();
+            }}
+            colors={[Colors.primary]}
+          />
+        }
+      >
+        <Text style={styles.greeting}>
+          Halo, {profile?.full_name} 👋
+        </Text>
+        <Text style={styles.dateText}>
+          {new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </Text>
+
+        <Text style={styles.sectionTitle}>Ringkasan Hari Ini</Text>
+
+        <View style={styles.statsGrid}>
+          <View style={styles.statCard}>
+            <Text style={styles.statIcon}>💰</Text>
+            <Text style={styles.statValue}>
+              Rp {todayStats.revenue.toLocaleString('id-ID')}
+            </Text>
+            <Text style={styles.statLabel}>Total Omzet</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statIcon}>🧾</Text>
+            <Text style={styles.statValue}>
+              {todayStats.transactions}
+            </Text>
+            <Text style={styles.statLabel}>Transaksi</Text>
+          </View>
+          <View style={[
+            styles.statCard,
+            todayStats.lowStock > 0 && styles.statCardWarning,
+          ]}>
+            <Text style={styles.statIcon}>⚠️</Text>
+            <Text style={[
+              styles.statValue,
+              todayStats.lowStock > 0 && styles.statValueWarning,
+            ]}>
+              {todayStats.lowStock}
+            </Text>
+            <Text style={styles.statLabel}>Stok Menipis</Text>
+          </View>
+        </View>
+
+        <View style={styles.infoBox}>
+          <Text style={styles.infoText}>
+            💡 Gunakan tab bar di bawah untuk navigasi ke POS,
+            Stok, Riwayat, dan Laporan.
           </Text>
         </View>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={signOut}
-        >
-          <Text style={styles.logoutText}>Keluar</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.menuGrid}>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/inventory')}
-        >
-          <Text style={styles.menuIcon}>📦</Text>
-          <Text style={styles.menuLabel}>Manajemen Stok</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/pos')}
-        >
-          <Text style={styles.menuIcon}>🛒</Text>
-          <Text style={styles.menuLabel}>POS</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/history')}
-        >
-          <Text style={styles.menuIcon}>📋</Text>
-          <Text style={styles.menuLabel}>Riwayat</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/reports/daily')}
-        >
-          <Text style={styles.menuIcon}>📊</Text>
-          <Text style={styles.menuLabel}>Laporan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/reports/monthly')}
-        >
-          <Text style={styles.menuIcon}>📅</Text>
-          <Text style={styles.menuLabel}>Rekap Bulanan</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -75,69 +138,77 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.gray[50],
   },
-  header: {
-    backgroundColor: Colors.primary,
-    padding: 24,
-    paddingTop: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  content: {
+    padding: 16,
+    paddingBottom: 32,
   },
   greeting: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.white,
+    color: Colors.gray[800],
+    marginBottom: 4,
   },
-  branch: {
+  dateText: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 2,
+    color: Colors.gray[500],
+    marginBottom: 24,
   },
-  logoutButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.gray[700],
+    marginBottom: 12,
   },
-  logoutText: {
-    color: Colors.white,
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  menuGrid: {
+  statsGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 16,
-    gap: 12,
+    gap: 10,
+    marginBottom: 20,
   },
-  menuItem: {
+  statCard: {
+    flex: 1,
     backgroundColor: Colors.white,
-    borderRadius: 16,
-    padding: 20,
-    width: '47%',
+    borderRadius: 12,
+    padding: 14,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  menuDisabled: {
-    opacity: 0.5,
+  statCardWarning: {
+    borderWidth: 1.5,
+    borderColor: Colors.warning,
   },
-  menuIcon: {
-    fontSize: 32,
+  statIcon: {
+    fontSize: 24,
     marginBottom: 8,
   },
-  menuLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
+  statValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  statValueWarning: {
+    color: Colors.warning,
+  },
+  statLabel: {
+    fontSize: 11,
+    color: Colors.gray[500],
     textAlign: 'center',
   },
-  menuSoon: {
-    fontSize: 11,
-    color: Colors.gray[400],
-    marginTop: 4,
+  infoBox: {
+    backgroundColor: '#eef2ff',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#c7d2fe',
+  },
+  infoText: {
+    fontSize: 13,
+    color: Colors.primary,
+    lineHeight: 20,
   },
 });
