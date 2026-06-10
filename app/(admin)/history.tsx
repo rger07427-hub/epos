@@ -18,7 +18,6 @@ import { Colors } from '../../constants/colors';
 import TransactionCard from '../../components/history/TransactionCard';
 import EmptyState from '../../components/shared/EmptyState';
 import Badge from '../../components/shared/Badge';
-import AppHeader from '../../components/shared/AppHeader';
 
 const methodLabel: Record<string, string> = {
   cash: 'Tunai',
@@ -81,7 +80,10 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader title="Riwayat Transaksi" subtitle={profile?.branch?.name} />
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Riwayat Transaksi</Text>
+      </View>
 
       {/* Ringkasan Hari Ini */}
       <View style={styles.summaryRow}>
@@ -253,7 +255,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.gray[50],
   },
-
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: Colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray[100],
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.gray[800],
+  },
   summaryRow: {
     flexDirection: 'row',
     padding: 16,

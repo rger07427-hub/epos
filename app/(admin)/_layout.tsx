@@ -1,111 +1,110 @@
 import { Tabs } from 'expo-router';
 import { Colors } from '../../constants/colors';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text } from 'react-native';
+import { useCartStore } from '../../store/useCartStore';
 
-function TabIcon({
-  icon,
-  label,
-  focused,
-}: {
-  icon: string;
-  label: string;
-  focused: boolean;
-}) {
+function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
   return (
-    <View style={tabStyles.container}>
-      <Text style={tabStyles.icon}>{icon}</Text>
-      <Text style={[
-        tabStyles.label,
-        { color: focused ? Colors.primary : Colors.gray[400] },
-      ]}>
-        {label}
-      </Text>
-    </View>
+    <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>
+      {icon}
+    </Text>
   );
 }
 
-const tabStyles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 4,
-  },
-  icon: {
-    fontSize: 22,
-    marginBottom: 2,
-  },
-  label: {
-    fontSize: 10,
-    fontWeight: '600',
-  },
-});
-
 export default function AdminLayout() {
+  const totalItems = useCartStore(s => s.getTotalItems());
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.gray[400],
         tabBarStyle: {
           backgroundColor: Colors.white,
           borderTopWidth: 1,
-          borderTopColor: Colors.gray[200],
-          height: 64,
+          borderTopColor: Colors.gray[100],
+          height: 60,
           paddingBottom: 8,
+          paddingTop: 4,
         },
-        tabBarShowLabel: false,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
+        },
       }}
     >
       <Tabs.Screen
         name="dashboard"
         options={{
+          title: 'Dashboard',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🏠" label="Beranda" focused={focused} />
+            <TabIcon icon="🏠" focused={focused} />
           ),
         }}
       />
       <Tabs.Screen
         name="pos"
         options={{
+          title: totalItems > 0 ? `POS (${totalItems})` : 'POS',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🛒" label="POS" focused={focused} />
+            <TabIcon icon="🛒" focused={focused} />
           ),
         }}
       />
       <Tabs.Screen
         name="inventory/index"
         options={{
+          title: 'Stok',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📦" label="Stok" focused={focused} />
+            <TabIcon icon="📦" focused={focused} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="inventory/add"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="inventory/edit"
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
+          title: 'Riwayat',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📋" label="Riwayat" focused={focused} />
+            <TabIcon icon="📋" focused={focused} />
           ),
         }}
       />
       <Tabs.Screen
         name="reports/daily"
         options={{
+          title: 'Laporan',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📊" label="Laporan" focused={focused} />
+            <TabIcon icon="📊" focused={focused} />
           ),
         }}
       />
       <Tabs.Screen
-        name="inventory/add"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="inventory/edit"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
         name="reports/monthly"
-        options={{ href: null }}
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profil',
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="👤" focused={focused} />
+          ),
+        }}
       />
     </Tabs>
   );

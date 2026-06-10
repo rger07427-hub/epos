@@ -16,7 +16,6 @@ import { Product } from '../../../types';
 import { Colors } from '../../../constants/colors';
 import ProductCard from '../../../components/inventory/ProductCard';
 import EmptyState from '../../../components/shared/EmptyState';
-import AppHeader from '../../../components/shared/AppHeader';
 
 export default function InventoryScreen() {
   const { profile } = useAuthStore();
@@ -47,13 +46,16 @@ export default function InventoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader
-        title="Manajemen Stok"
-        rightAction={{
-          label: '+ Tambah',
-          onPress: () => router.push('/(admin)/inventory/add'),
-        }}
-      />
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Manajemen Stok</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.push('/(admin)/inventory/add')}
+        >
+          <Text style={styles.addButtonText}>+ Tambah</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Search */}
       <View style={styles.searchContainer}>
@@ -135,7 +137,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.gray[50],
   },
-
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: Colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray[100],
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.gray[800],
+  },
+  addButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  addButtonText: {
+    color: Colors.white,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   searchContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,

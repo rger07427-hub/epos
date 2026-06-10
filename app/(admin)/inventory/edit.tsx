@@ -18,7 +18,6 @@ import { Category, Product } from '../../../types';
 import { Colors } from '../../../constants/colors';
 import FormField from '../../../components/shared/FormField';
 import CategoryPicker from '../../../components/shared/CategoryPicker';
-import AppHeader from '../../../components/shared/AppHeader';
 
 interface FormData {
   name: string;
@@ -208,15 +207,23 @@ export default function EditProductScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader
-        title="Edit Produk"
-        showBack
-        rightAction={{
-          label: 'Nonaktifkan',
-          onPress: handleDelete,
-          color: '#fca5a5',
-        }}
-      />
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.backText}>← Kembali</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Edit Produk</Text>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDelete}
+          disabled={loading}
+        >
+          <Text style={styles.deleteText}>Nonaktifkan</Text>
+        </TouchableOpacity>
+      </View>
 
       <ScrollView
         style={styles.scroll}
@@ -347,7 +354,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.gray[500],
   },
-
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: Colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.gray[100],
+  },
+  backButton: {
+    width: 80,
+  },
+  backText: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: '600',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.gray[800],
+  },
+  deleteButton: {
+    width: 90,
+    alignItems: 'flex-end',
+  },
+  deleteText: {
+    fontSize: 13,
+    color: Colors.danger,
+    fontWeight: '600',
+  },
   scroll: {
     flex: 1,
   },
