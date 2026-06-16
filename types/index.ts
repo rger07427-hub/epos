@@ -71,3 +71,12 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export interface CashierUser {
+  id: string;
+  full_name: string;
+  role: UserRole;
+  branch_id: string;
+  created_at: string;
+  branch?: Branch;
+}

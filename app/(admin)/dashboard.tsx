@@ -59,6 +59,14 @@ export default function AdminDashboard() {
           <Text style={styles.menuIcon}>📅</Text>
           <Text style={styles.menuLabel}>Rekap Bulanan</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/(admin)/users')}
+        >
+          <Text style={styles.menuIcon}>👥</Text>
+          <Text style={styles.menuLabel}>Kelola Kasir</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

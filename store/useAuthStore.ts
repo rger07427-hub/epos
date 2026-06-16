@@ -34,15 +34,29 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   loadProfile: async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        set({ profile: null });
+        return;
+      }
 
-    const { data } = await supabase
-      .from('profiles')
-      .select('*, branch:branches(*)')
-      .eq('id', user.id)
-      .single();
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*, branch:branches(*)')
+        .eq('id', user.id)
+        .single();
 
-    if (data) set({ profile: data });
+      if (error) {
+        console.error('Error loading profile in loadProfile:', error.message, error.details);
+        set({ profile: null });
+        return;
+      }
+
+      set({ profile: data || null });
+    } catch (err: any) {
+      console.error('Exception in loadProfile:', err.message || err);
+      set({ profile: null });
+    }
   },
 }));

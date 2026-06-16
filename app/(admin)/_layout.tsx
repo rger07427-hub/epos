@@ -98,6 +98,15 @@ export default function AdminLayout() {
         }}
       />
       <Tabs.Screen
+        name="users/index"
+        options={{
+          title: 'Kasir',
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon="👥" focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profil',
