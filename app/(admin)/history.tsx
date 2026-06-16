@@ -18,6 +18,7 @@ import { Colors } from '../../constants/colors';
 import TransactionCard from '../../components/history/TransactionCard';
 import EmptyState from '../../components/shared/EmptyState';
 import Badge from '../../components/shared/Badge';
+import { useRealtimeTransactions } from '../../lib/useRealtimeTransactions';
 
 const methodLabel: Record<string, string> = {
   cash: 'Tunai',
@@ -37,6 +38,11 @@ export default function HistoryScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selected, setSelected] = useState<Transaction | null>(null);
+
+  // Realtime subscription
+  useRealtimeTransactions(profile?.branch_id, () => {
+    fetchTransactions();
+  });
 
   const fetchTransactions = useCallback(async () => {
     if (!profile?.branch_id) return;
