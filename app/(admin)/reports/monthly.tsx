@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
-import { useAuthStore } from '../../../store/useAuthStore';
 import { Colors } from '../../../constants/colors';
 
 interface MonthlySummary {
@@ -29,7 +28,6 @@ const MONTHS = [
 ];
 
 export default function MonthlyReportScreen() {
-  const { profile } = useAuthStore();
   const [summary, setSummary] = useState<MonthlySummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -38,15 +36,12 @@ export default function MonthlyReportScreen() {
   const [month, setMonth] = useState(now.getMonth());
 
   const fetchMonthlyReport = useCallback(async () => {
-    if (!profile?.branch_id) return;
-
     const startDate = new Date(year, month, 1).toISOString();
     const endDate = new Date(year, month + 1, 0, 23, 59, 59).toISOString();
 
     const { data: transactions } = await supabase
       .from('transactions')
       .select('*, items:transaction_items(*)')
-      .eq('branch_id', profile.branch_id)
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
@@ -112,7 +107,7 @@ export default function MonthlyReportScreen() {
     });
     setLoading(false);
     setRefreshing(false);
-  }, [profile, year, month]);
+  }, [year, month]);
 
   useEffect(() => {
     fetchMonthlyReport();

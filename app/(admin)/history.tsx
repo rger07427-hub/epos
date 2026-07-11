@@ -12,7 +12,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { supabase } from '../../lib/supabase';
-import { useAuthStore } from '../../store/useAuthStore';
 import { Transaction } from '../../types';
 import { Colors } from '../../constants/colors';
 import TransactionCard from '../../components/history/TransactionCard';
@@ -33,35 +32,27 @@ const methodBadge: Record<string, 'success' | 'info' | 'warning'> = {
 };
 
 export default function HistoryScreen() {
-  const { profile } = useAuthStore();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selected, setSelected] = useState<Transaction | null>(null);
 
   // Realtime subscription
-  useRealtimeTransactions(profile?.branch_id, () => {
+  useRealtimeTransactions(() => {
     fetchTransactions();
   });
 
   const fetchTransactions = useCallback(async () => {
-    if (!profile?.branch_id) return;
-
     const { data, error } = await supabase
       .from('transactions')
-      .select(`
-        *,
-        cashier:profiles(full_name),
-        items:transaction_items(*)
-      `)
-      .eq('branch_id', profile.branch_id)
+      .select('*, cashier:profiles(full_name), items:transaction_items(*)')
       .order('created_at', { ascending: false })
       .limit(100);
 
     if (!error && data) setTransactions(data);
     setLoading(false);
     setRefreshing(false);
-  }, [profile]);
+  }, []);
 
   useEffect(() => {
     fetchTransactions();

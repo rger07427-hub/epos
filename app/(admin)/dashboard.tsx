@@ -9,14 +9,9 @@ export default function AdminDashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>
-            Halo, {profile?.full_name} 👋
-          </Text>
-          <Text style={styles.branch}>
-            📍 {profile?.branch?.name}
-          </Text>
-        </View>
+        <Text style={styles.greeting}>
+          Halo, {profile?.full_name} 👋
+        </Text>
       </View>
 
       <View style={styles.menuGrid}>
@@ -89,11 +84,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.white,
-  },
-  branch: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 2,
   },
   menuGrid: {
     flexDirection: 'row',

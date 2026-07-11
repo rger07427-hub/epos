@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
-import { useAuthStore } from '../../../store/useAuthStore';
 import { Colors } from '../../../constants/colors';
 import Badge from '../../../components/shared/Badge';
 
@@ -32,7 +31,6 @@ const methodBadge: Record<string, 'success' | 'info' | 'warning'> = {
 };
 
 export default function DailyReportScreen() {
-  const { profile } = useAuthStore();
   const [summary, setSummary] = useState<DailySummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -41,15 +39,12 @@ export default function DailyReportScreen() {
   );
 
   const fetchDailyReport = useCallback(async () => {
-    if (!profile?.branch_id) return;
-
     const startOfDay = `${selectedDate}T00:00:00`;
     const endOfDay = `${selectedDate}T23:59:59`;
 
     const { data: transactions } = await supabase
       .from('transactions')
       .select('*, items:transaction_items(*)')
-      .eq('branch_id', profile.branch_id)
       .gte('created_at', startOfDay)
       .lte('created_at', endOfDay);
 
@@ -116,7 +111,7 @@ export default function DailyReportScreen() {
     });
     setLoading(false);
     setRefreshing(false);
-  }, [profile, selectedDate]);
+  }, [selectedDate]);
 
   useEffect(() => {
     fetchDailyReport();

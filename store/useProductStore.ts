@@ -7,8 +7,8 @@ interface ProductState {
   products: Product[];
   loading: boolean;
   channel: RealtimeChannel | null;
-  fetchProducts: (branchId: string) => Promise<void>;
-  subscribeRealtime: (branchId: string) => void;
+  fetchProducts: () => Promise<void>;
+  subscribeRealtime: () => void;
   unsubscribeRealtime: () => void;
 }
 
@@ -17,55 +17,28 @@ export const useProductStore = create<ProductState>((set, get) => ({
   loading: false,
   channel: null,
 
-  fetchProducts: async (branchId: string) => {
+  fetchProducts: async () => {
     set({ loading: true });
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        category:categories(*),
-        branch_stocks!inner(stock)
-      `)
+      .select('*, category:categories(*)')
       .eq('is_active', true)
-      .eq('branch_stocks.branch_id', branchId)
       .order('name');
 
-    if (!error && data) {
-      const products = data.map((p: any) => ({
-        ...p,
-        stock: p.branch_stocks?.[0]?.stock ?? 0,
-      }));
-      set({ products });
-    }
+    if (!error && data) set({ products: data });
     set({ loading: false });
   },
 
-  subscribeRealtime: (branchId: string) => {
+  subscribeRealtime: () => {
     get().unsubscribeRealtime();
 
     const channel = supabase
-      .channel(`products-${branchId}`)
+      .channel('products-realtime')
       .on(
         'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'branch_stocks',
-          filter: `branch_id=eq.${branchId}`,
-        },
+        { event: '*', schema: 'public', table: 'products' },
         async () => {
-          await get().fetchProducts(branchId);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'products',
-        },
-        async () => {
-          await get().fetchProducts(branchId);
+          await get().fetchProducts();
         }
       )
       .subscribe();

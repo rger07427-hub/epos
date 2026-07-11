@@ -26,8 +26,8 @@ export default function AdminPOS() {
   const [activeTab, setActiveTab] = useState<'products' | 'cart'>('products');
 
   useEffect(() => {
-    if (profile?.branch_id) fetchProducts(profile.branch_id);
-  }, [profile]);
+    fetchProducts();
+  }, []);
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -37,16 +37,14 @@ export default function AdminPOS() {
     method: 'cash' | 'qris' | 'transfer',
     paid: number
   ) => {
-    if (!profile?.branch_id) return;
+    if (!profile) return;
     const total = getTotal();
 
     try {
-      // 1. Simpan transaksi
       const { data: trx, error: trxError } = await supabase
         .from('transactions')
         .insert({
           cashier_id: profile.id,
-          branch_id: profile.branch_id,
           total,
           paid_amount: paid,
           change_amount: method === 'cash' ? paid - total : 0,
@@ -58,7 +56,6 @@ export default function AdminPOS() {
 
       if (trxError) throw trxError;
 
-      // 2. Simpan item transaksi
       const trxItems = items.map(i => ({
         transaction_id: trx.id,
         product_id: i.product.id,
@@ -73,26 +70,16 @@ export default function AdminPOS() {
 
       if (itemsError) throw itemsError;
 
-      // 3. Kurangi stok per item
+      // Kurangi stok pakai fungsi atomic (aman untuk beberapa kasir bersamaan)
       for (const item of items) {
-        const { data: stockData } = await supabase
-          .from('branch_stocks')
-          .select('stock')
-          .eq('product_id', item.product.id)
-          .eq('branch_id', profile.branch_id)
-          .single();
-
-        if (stockData) {
-          await supabase
-            .from('branch_stocks')
-            .update({ stock: stockData.stock - item.quantity })
-            .eq('product_id', item.product.id)
-            .eq('branch_id', profile.branch_id);
-        }
+        const { error: stockError } = await supabase.rpc('decrement_stock', {
+          p_product_id: item.product.id,
+          p_qty: item.quantity,
+        });
+        if (stockError) throw stockError;
       }
 
-      // 4. Refresh produk & kosongkan keranjang
-      await fetchProducts(profile.branch_id);
+      await fetchProducts();
       clearCart();
       setShowPayment(false);
       setActiveTab('products');
@@ -115,7 +102,6 @@ export default function AdminPOS() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>POS</Text>
-        <Text style={styles.branchName}>{profile?.branch?.name}</Text>
       </View>
 
       {/* Tab Switcher (untuk HP) */}
@@ -183,9 +169,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray[50],
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 14,
     backgroundColor: Colors.primary,
@@ -194,10 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.white,
-  },
-  branchName: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.85)',
   },
   tabRow: {
     flexDirection: 'row',

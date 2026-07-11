@@ -15,11 +15,8 @@ export default function RootLayout() {
         if (event === 'SIGNED_IN' && session) {
           await loadProfile();
           const profile = useAuthStore.getState().profile;
-          
           if (profile) {
-            if (profile.branch_id) {
-              subscribeRealtime(profile.branch_id);
-            }
+            subscribeRealtime();
             if (profile.role === 'admin') {
               router.replace('/(admin)/dashboard');
             } else if (profile.role === 'kasir') {
@@ -40,9 +37,7 @@ export default function RootLayout() {
       }
     );
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   return <Stack screenOptions={{ headerShown: false }} />;

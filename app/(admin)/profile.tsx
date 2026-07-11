@@ -50,7 +50,6 @@ export default function ProfileScreen() {
 
       {/* Info */}
       <View style={styles.infoCard}>
-        <InfoRow label="Cabang" value={profile?.branch?.name ?? '-'} />
         <InfoRow label="Role" value={profile?.role ?? '-'} />
       </View>
 

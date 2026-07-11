@@ -12,9 +12,8 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
-import { useAuthStore } from '../../../store/useAuthStore';
 import { useProductStore } from '../../../store/useProductStore';
-import { Category, Product } from '../../../types';
+import { Category } from '../../../types';
 import { Colors } from '../../../constants/colors';
 import FormField from '../../../components/shared/FormField';
 import CategoryPicker from '../../../components/shared/CategoryPicker';
@@ -38,7 +37,6 @@ interface FormErrors {
 
 export default function EditProductScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { profile } = useAuthStore();
   const { fetchProducts } = useProductStore();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -67,25 +65,20 @@ export default function EditProductScreen() {
   };
 
   const fetchProduct = async () => {
-    if (!id || !profile?.branch_id) return;
+    if (!id) return;
     setFetching(true);
 
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        category:categories(*),
-        branch_stocks!inner(stock)
-      `)
+      .select('*, category:categories(*)')
       .eq('id', id)
-      .eq('branch_stocks.branch_id', profile.branch_id)
       .single();
 
     if (!error && data) {
       setForm({
         name: data.name,
         price: String(data.price),
-        stock: String(data.branch_stocks?.[0]?.stock ?? 0),
+        stock: String(data.stock),
         unit: data.unit,
         category_id: data.category_id,
         is_active: data.is_active,
@@ -112,35 +105,25 @@ export default function EditProductScreen() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    if (!profile?.branch_id || !id) return;
+    if (!id) return;
 
     setLoading(true);
     try {
-      // 1. Update produk
-      const { error: productError } = await supabase
+      const { error } = await supabase
         .from('products')
         .update({
           name: form.name.trim(),
           price: Number(form.price),
+          stock: Number(form.stock),
           unit: form.unit.trim(),
           category_id: form.category_id,
           is_active: form.is_active,
         })
         .eq('id', id);
 
-      if (productError) throw productError;
+      if (error) throw error;
 
-      // 2. Update stok cabang
-      const { error: stockError } = await supabase
-        .from('branch_stocks')
-        .update({ stock: Number(form.stock) })
-        .eq('product_id', id)
-        .eq('branch_id', profile.branch_id);
-
-      if (stockError) throw stockError;
-
-      // 3. Refresh daftar produk
-      await fetchProducts(profile.branch_id);
+      await fetchProducts();
 
       Alert.alert('Berhasil', 'Produk berhasil diperbarui', [
         { text: 'OK', onPress: () => router.back() },
@@ -171,9 +154,7 @@ export default function EditProductScreen() {
 
               if (error) throw error;
 
-              if (profile?.branch_id) {
-                await fetchProducts(profile.branch_id);
-              }
+              await fetchProducts();
 
               Alert.alert(
                 'Berhasil',

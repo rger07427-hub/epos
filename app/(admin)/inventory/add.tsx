@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
-import { useAuthStore } from '../../../store/useAuthStore';
 import { useProductStore } from '../../../store/useProductStore';
 import { Category } from '../../../types';
 import { Colors } from '../../../constants/colors';
@@ -35,7 +34,6 @@ interface FormErrors {
 }
 
 export default function AddProductScreen() {
-  const { profile } = useAuthStore();
   const { fetchProducts } = useProductStore();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -78,38 +76,23 @@ export default function AddProductScreen() {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    if (!profile?.branch_id) return;
 
     setLoading(true);
     try {
-      // 1. Insert produk
-      const { data: product, error: productError } = await supabase
+      const { error } = await supabase
         .from('products')
         .insert({
           name: form.name.trim(),
           price: Number(form.price),
+          stock: Number(form.stock),
           unit: form.unit.trim(),
           category_id: form.category_id,
           is_active: true,
-        })
-        .select()
-        .single();
-
-      if (productError) throw productError;
-
-      // 2. Insert stok untuk cabang ini
-      const { error: stockError } = await supabase
-        .from('branch_stocks')
-        .insert({
-          branch_id: profile.branch_id,
-          product_id: product.id,
-          stock: Number(form.stock),
         });
 
-      if (stockError) throw stockError;
+      if (error) throw error;
 
-      // 3. Refresh daftar produk
-      await fetchProducts(profile.branch_id);
+      await fetchProducts();
 
       Alert.alert('Berhasil', 'Produk berhasil ditambahkan', [
         { text: 'OK', onPress: () => router.back() },

@@ -24,19 +24,16 @@ export default function UsersScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchUsers = useCallback(async () => {
-    if (!profile?.branch_id) return;
-
     const { data, error } = await supabase
       .from('profiles')
-      .select('*, branch:branches(*)')
-      .eq('branch_id', profile.branch_id)
+      .select('*')
       .order('role')
       .order('full_name');
 
     if (!error && data) setUsers(data);
     setLoading(false);
     setRefreshing(false);
-  }, [profile]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -105,21 +102,13 @@ export default function UsersScreen() {
           onPress={() =>
             Alert.alert(
               'Tambah Kasir',
-              'Untuk menambah kasir baru:\n\n1. Buka dashboard Supabase\n2. Masuk ke Authentication → Users\n3. Klik "Add user"\n4. Isi email & password kasir\n5. Centang Auto Confirm\n6. Jalankan SQL:\n\nINSERT INTO profiles (id, full_name, role, branch_id)\nVALUES (\'UID\', \'Nama Kasir\', \'kasir\', \'BRANCH_ID\');',
+              'Untuk menambah kasir baru:\n\n1. Buka dashboard Supabase\n2. Masuk ke Authentication → Users\n3. Klik "Add user"\n4. Isi email & password kasir\n5. Centang Auto Confirm\n6. Jalankan SQL:\n\nINSERT INTO profiles (id, full_name, role)\nVALUES (\'UID\', \'Nama Kasir\', \'kasir\');',
               [{ text: 'Mengerti' }]
             )
           }
         >
           <Text style={styles.addBtnText}>+ Tambah</Text>
         </TouchableOpacity>
-      </View>
-
-      {/* Info Banner */}
-      <View style={styles.infoBanner}>
-        <Text style={styles.infoText}>
-          📍 Menampilkan pengguna cabang{' '}
-          <Text style={styles.infoBold}>{profile?.branch?.name}</Text>
-        </Text>
       </View>
 
       {/* List */}
@@ -208,20 +197,6 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: 'bold',
     fontSize: 14,
-  },
-  infoBanner: {
-    backgroundColor: '#eef2ff',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e7ff',
-  },
-  infoText: {
-    fontSize: 13,
-    color: Colors.primary,
-  },
-  infoBold: {
-    fontWeight: 'bold',
   },
   loader: {
     marginTop: 48,

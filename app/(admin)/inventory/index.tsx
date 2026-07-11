@@ -24,10 +24,8 @@ export default function InventoryScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
-    if (profile?.branch_id) {
-      fetchProducts(profile.branch_id);
-    }
-  }, [profile]);
+    fetchProducts();
+  }, []);
 
   const categories = ['Semua', ...new Set(
     products
