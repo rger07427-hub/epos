@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
+import { router } from 'expo-router';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
 
@@ -52,6 +53,14 @@ export default function ProfileScreen() {
       <View style={styles.infoCard}>
         <InfoRow label="Role" value={profile?.role ?? '-'} />
       </View>
+
+      {/* Printer Button */}
+      <TouchableOpacity
+        style={styles.printerBtn}
+        onPress={() => router.push('/(admin)/printer-settings')}
+      >
+        <Text style={styles.printerBtnText}>🖨️ Pengaturan Printer</Text>
+      </TouchableOpacity>
 
       {/* Logout */}
       <TouchableOpacity
@@ -156,6 +165,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: Colors.gray[800],
+  },
+  printerBtn: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+  },
+  printerBtnText: {
+    fontSize: 16,
+    color: Colors.primary,
+    fontWeight: '600',
   },
   logoutBtn: {
     marginHorizontal: 16,
