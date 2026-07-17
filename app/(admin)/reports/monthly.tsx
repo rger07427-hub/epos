@@ -8,10 +8,12 @@ import {
   SafeAreaView,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { Colors } from '../../../constants/colors';
+import { buildMonthlyReportText, printPlainText } from '../../../lib/receipt';
 
 interface MonthlySummary {
   totalRevenue: number;
@@ -34,6 +36,16 @@ export default function MonthlyReportScreen() {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
+  const [printing, setPrinting] = useState(false);
+
+  const handlePrint = async () => {
+    if (!summary) return;
+    setPrinting(true);
+    const text = buildMonthlyReportText(summary, `${MONTHS[month]} ${year}`);
+    const result = await printPlainText(text);
+    setPrinting(false);
+    Alert.alert(result.success ? 'Berhasil' : 'Gagal', result.message);
+  };
 
   const fetchMonthlyReport = useCallback(async () => {
     const startDate = new Date(year, month, 1).toISOString();
@@ -204,6 +216,18 @@ export default function MonthlyReportScreen() {
               {summary?.totalTransactions ?? 0} transaksi
             </Text>
           </View>
+
+          <TouchableOpacity
+            style={styles.printBtn}
+            onPress={handlePrint}
+            disabled={printing}
+          >
+            {printing ? (
+              <ActivityIndicator color={Colors.white} />
+            ) : (
+              <Text style={styles.printBtnText}>🖨️ Cetak Laporan Ini</Text>
+            )}
+          </TouchableOpacity>
 
           {/* Statistik */}
           <View style={styles.statsRow}>
@@ -533,4 +557,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.primary,
   },
+  printBtn: {
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  printBtnText: { color: Colors.white, fontSize: 15, fontWeight: 'bold' },
 });

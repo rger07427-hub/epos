@@ -9,6 +9,10 @@ import {
   Alert,
   ScrollView,
   ActivityIndicator,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
 
@@ -69,121 +73,130 @@ export default function PaymentModal({
       transparent
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.sheet}>
+                <View style={styles.handle} />
 
-          <Text style={styles.title}>Pembayaran</Text>
+                <Text style={styles.title}>Pembayaran</Text>
 
-          {/* Total */}
-          <View style={styles.totalBox}>
-            <Text style={styles.totalLabel}>Total Belanja</Text>
-            <Text style={styles.totalAmount}>
-              Rp {total.toLocaleString('id-ID')}
-            </Text>
-          </View>
-
-          {/* Metode Bayar */}
-          <Text style={styles.sectionLabel}>Metode Pembayaran</Text>
-          <View style={styles.methodRow}>
-            {methods.map(m => (
-              <TouchableOpacity
-                key={m.key}
-                style={[
-                  styles.methodBtn,
-                  method === m.key && styles.methodBtnActive,
-                ]}
-                onPress={() => setMethod(m.key)}
-              >
-                <Text style={styles.methodIcon}>{m.icon}</Text>
-                <Text style={[
-                  styles.methodLabel,
-                  method === m.key && styles.methodLabelActive,
-                ]}>
-                  {m.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {/* Input Cash */}
-          {method === 'cash' && (
-            <View>
-              <Text style={styles.sectionLabel}>Uang Diterima</Text>
-              <TextInput
-                style={styles.cashInput}
-                placeholder="Masukkan nominal..."
-                placeholderTextColor={Colors.gray[400]}
-                keyboardType="numeric"
-                value={cashInput}
-                onChangeText={setCashInput}
-              />
-
-              {/* Quick Amount */}
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.quickList}
-              >
-                {quickCash.map(amount => (
-                  <TouchableOpacity
-                    key={amount}
-                    style={styles.quickBtn}
-                    onPress={() => setCashInput(String(amount))}
-                  >
-                    <Text style={styles.quickText}>
-                      Rp {amount.toLocaleString('id-ID')}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-
-              {/* Kembalian */}
-              {cashAmount >= total && (
-                <View style={styles.changeBox}>
-                  <Text style={styles.changeLabel}>Kembalian</Text>
-                  <Text style={styles.changeAmount}>
-                    Rp {change.toLocaleString('id-ID')}
+                {/* Total */}
+                <View style={styles.totalBox}>
+                  <Text style={styles.totalLabel}>Total Belanja</Text>
+                  <Text style={styles.totalAmount}>
+                    Rp {total.toLocaleString('id-ID')}
                   </Text>
                 </View>
-              )}
-            </View>
-          )}
 
-          {/* QRIS / Transfer info */}
-          {method !== 'cash' && (
-            <View style={styles.infoBox}>
-              <Text style={styles.infoText}>
-                {method === 'qris'
-                  ? '📱 Perlihatkan kode QRIS kepada pelanggan dan konfirmasi setelah pembayaran berhasil.'
-                  : '🏦 Minta pelanggan transfer ke rekening toko dan konfirmasi setelah pembayaran masuk.'}
-              </Text>
-            </View>
-          )}
+                {/* Metode Bayar */}
+                <Text style={styles.sectionLabel}>Metode Pembayaran</Text>
+                <View style={styles.methodRow}>
+                  {methods.map(m => (
+                    <TouchableOpacity
+                      key={m.key}
+                      style={[
+                        styles.methodBtn,
+                        method === m.key && styles.methodBtnActive,
+                      ]}
+                      onPress={() => setMethod(m.key)}
+                    >
+                      <Text style={styles.methodIcon}>{m.icon}</Text>
+                      <Text style={[
+                        styles.methodLabel,
+                        method === m.key && styles.methodLabelActive,
+                      ]}>
+                        {m.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
 
-          {/* Tombol */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.cancelBtn}
-              onPress={onClose}
-              disabled={loading}
-            >
-              <Text style={styles.cancelText}>Batal</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.confirmBtn, loading && styles.confirmDisabled]}
-              onPress={handleConfirm}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color={Colors.white} />
-              ) : (
-                <Text style={styles.confirmText}>Konfirmasi Bayar</Text>
-              )}
-            </TouchableOpacity>
+                {/* Input Cash */}
+                {method === 'cash' && (
+                  <View>
+                    <Text style={styles.sectionLabel}>Uang Diterima</Text>
+                    <TextInput
+                      style={styles.cashInput}
+                      placeholder="Masukkan nominal..."
+                      placeholderTextColor={Colors.gray[400]}
+                      keyboardType="numeric"
+                      value={cashInput}
+                      onChangeText={setCashInput}
+                    />
+
+                    {/* Quick Amount */}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.quickList}
+                    >
+                      {quickCash.map(amount => (
+                        <TouchableOpacity
+                          key={amount}
+                          style={styles.quickBtn}
+                          onPress={() => setCashInput(String(amount))}
+                        >
+                          <Text style={styles.quickText}>
+                            Rp {amount.toLocaleString('id-ID')}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+
+                    {/* Kembalian */}
+                    {cashAmount >= total && (
+                      <View style={styles.changeBox}>
+                        <Text style={styles.changeLabel}>Kembalian</Text>
+                        <Text style={styles.changeAmount}>
+                          Rp {change.toLocaleString('id-ID')}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+
+                {/* QRIS / Transfer info */}
+                {method !== 'cash' && (
+                  <View style={styles.infoBox}>
+                    <Text style={styles.infoText}>
+                      {method === 'qris'
+                        ? '📱 Perlihatkan kode QRIS kepada pelanggan dan konfirmasi setelah pembayaran berhasil.'
+                        : '🏦 Minta pelanggan transfer ke rekening toko dan konfirmasi setelah pembayaran masuk.'}
+                    </Text>
+                  </View>
+                )}
+
+                {/* Tombol */}
+                <View style={styles.buttonRow}>
+                  <TouchableOpacity
+                    style={styles.cancelBtn}
+                    onPress={onClose}
+                    disabled={loading}
+                  >
+                    <Text style={styles.cancelText}>Batal</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.confirmBtn, loading && styles.confirmDisabled]}
+                    onPress={handleConfirm}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color={Colors.white} />
+                    ) : (
+                      <Text style={styles.confirmText}>Konfirmasi Bayar</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

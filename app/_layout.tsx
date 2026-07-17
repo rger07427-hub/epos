@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/useAuthStore';
 import { useProductStore } from '../store/useProductStore';
+import { useStoreSettingsStore } from '../store/useStoreSettingsStore';
 
 export default function RootLayout() {
   const { loadProfile } = useAuthStore();
@@ -13,6 +14,7 @@ export default function RootLayout() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
+          useStoreSettingsStore.getState().fetchSettings();
           await loadProfile();
           const profile = useAuthStore.getState().profile;
           if (profile) {

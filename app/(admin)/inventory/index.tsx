@@ -47,12 +47,20 @@ export default function InventoryScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Manajemen Stok</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => router.push('/(admin)/inventory/add')}
-        >
-          <Text style={styles.addButtonText}>+ Tambah</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.categoryLinkBtn}
+            onPress={() => router.push('/(admin)/categories')}
+          >
+            <Text style={styles.categoryLinkText}>🏷️ Kategori</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => router.push('/(admin)/inventory/add')}
+          >
+            <Text style={styles.addButtonText}>+ Tambah</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Search */}
@@ -149,6 +157,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.gray[800],
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  categoryLinkBtn: {
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  categoryLinkText: {
+    color: Colors.primary,
+    fontWeight: '600',
+    fontSize: 13,
   },
   addButton: {
     backgroundColor: Colors.primary,

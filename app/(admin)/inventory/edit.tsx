@@ -9,6 +9,7 @@ import {
   Alert,
   SafeAreaView,
   Switch,
+  TextInput,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
@@ -172,11 +173,6 @@ export default function EditProductScreen() {
     );
   };
 
-  const unitOptions = [
-    'pcs', 'kg', 'gram', 'liter', 'ml',
-    'botol', 'bungkus', 'dus', 'lusin'
-  ];
-
   if (fetching) {
     return (
       <View style={styles.loadingContainer}>
@@ -267,40 +263,20 @@ export default function EditProductScreen() {
           </View>
         </View>
 
-        {/* Satuan */}
-        <View style={styles.unitContainer}>
-          <Text style={styles.unitLabel}>
-            Satuan <Text style={styles.required}>*</Text>
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.unitList}
-          >
-            {unitOptions.map(unit => (
-              <TouchableOpacity
-                key={unit}
-                style={[
-                  styles.unitChip,
-                  form.unit === unit && styles.unitChipActive,
-                ]}
-                onPress={() => setForm(f => ({ ...f, unit }))}
-              >
-                <Text style={[
-                  styles.unitText,
-                  form.unit === unit && styles.unitTextActive,
-                ]}>
-                  {unit}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+        <FormField
+          label="Satuan"
+          required
+          placeholder="contoh: pcs, kg, botol, karton"
+          value={form.unit}
+          onChangeText={v => setForm(f => ({ ...f, unit: v }))}
+          error={errors.unit}
+        />
 
         <CategoryPicker
           categories={categories}
           selected={form.category_id}
           onSelect={id => setForm(f => ({ ...f, category_id: id }))}
+          onCategoryCreated={(newCat) => setCategories(prev => [...prev, newCat])}
           error={errors.category_id}
         />
 
@@ -464,5 +440,15 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  customInput: {
+    backgroundColor: Colors.white,
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: Colors.gray[800],
   },
 });

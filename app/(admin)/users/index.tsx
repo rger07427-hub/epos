@@ -6,8 +6,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
-  TouchableOpacity,
-  Alert,
   RefreshControl,
 } from 'react-native';
 import { supabase } from '../../../lib/supabase';
@@ -23,7 +21,7 @@ export default function UsersScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchUsers = useCallback(async () => {
+  const fetchPrinters = useCallback(async () => {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -36,20 +34,8 @@ export default function UsersScreen() {
   }, []);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
-  const handleToggleActive = (user: CashierUser) => {
-    if (user.id === profile?.id) {
-      Alert.alert('Tidak Bisa', 'Anda tidak bisa menonaktifkan akun sendiri');
-      return;
-    }
-    Alert.alert(
-      'Info',
-      'Untuk menonaktifkan akun kasir, hapus atau nonaktifkan user di dashboard Supabase Authentication.',
-      [{ text: 'OK' }]
-    );
-  };
+    fetchPrinters();
+  }, [fetchPrinters]);
 
   const renderUser = ({ item }: { item: CashierUser }) => {
     const isMe = item.id === profile?.id;
@@ -80,14 +66,6 @@ export default function UsersScreen() {
             })}
           </Text>
         </View>
-        {!isMe && item.role !== 'admin' && (
-          <TouchableOpacity
-            style={styles.actionBtn}
-            onPress={() => handleToggleActive(item)}
-          >
-            <Text style={styles.actionText}>⚙️</Text>
-          </TouchableOpacity>
-        )}
       </View>
     );
   };
@@ -97,18 +75,6 @@ export default function UsersScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Manajemen Kasir</Text>
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() =>
-            Alert.alert(
-              'Tambah Kasir',
-              'Untuk menambah kasir baru:\n\n1. Buka dashboard Supabase\n2. Masuk ke Authentication → Users\n3. Klik "Add user"\n4. Isi email & password kasir\n5. Centang Auto Confirm\n6. Jalankan SQL:\n\nINSERT INTO profiles (id, full_name, role)\nVALUES (\'UID\', \'Nama Kasir\', \'kasir\');',
-              [{ text: 'Mengerti' }]
-            )
-          }
-        >
-          <Text style={styles.addBtnText}>+ Tambah</Text>
-        </TouchableOpacity>
       </View>
 
       {/* List */}
@@ -138,7 +104,7 @@ export default function UsersScreen() {
               refreshing={refreshing}
               onRefresh={() => {
                 setRefreshing(true);
-                fetchUsers();
+                fetchPrinters();
               }}
               colors={[Colors.primary]}
             />
@@ -146,23 +112,6 @@ export default function UsersScreen() {
           showsVerticalScrollIndicator={false}
         />
       )}
-
-      {/* Panduan */}
-      <View style={styles.guide}>
-        <Text style={styles.guideTitle}>📋 Cara Tambah Kasir Baru</Text>
-        <Text style={styles.guideStep}>
-          1. Buka Supabase Dashboard
-        </Text>
-        <Text style={styles.guideStep}>
-          2. Authentication → Users → Add user
-        </Text>
-        <Text style={styles.guideStep}>
-          3. Isi email & password → Auto Confirm
-        </Text>
-        <Text style={styles.guideStep}>
-          4. Jalankan SQL insert ke tabel profiles
-        </Text>
-      </View>
     </SafeAreaView>
   );
 }
@@ -173,9 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray[50],
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 16,
     backgroundColor: Colors.white,
@@ -186,17 +132,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: Colors.gray[800],
-  },
-  addBtn: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  addBtnText: {
-    color: Colors.white,
-    fontWeight: 'bold',
-    fontSize: 14,
   },
   loader: {
     marginTop: 48,
@@ -253,31 +188,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: Colors.gray[400],
     marginTop: 4,
-  },
-  actionBtn: {
-    padding: 8,
-  },
-  actionText: {
-    fontSize: 20,
-  },
-  guide: {
-    margin: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: Colors.gray[200],
-  },
-  guideTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: Colors.gray[700],
-    marginBottom: 8,
-  },
-  guideStep: {
-    fontSize: 13,
-    color: Colors.gray[500],
-    marginBottom: 4,
-    lineHeight: 20,
   },
 });

@@ -16,6 +16,7 @@ import { Colors } from '../../constants/colors';
 import ProductGrid from '../../components/pos/ProductGrid';
 import CartPanel from '../../components/pos/CartPanel';
 import PaymentModal from '../../components/pos/PaymentModal';
+import { printTransactionReceipt } from '../../lib/receipt';
 
 export default function CashierPOS() {
   const { profile } = useAuthStore();
@@ -79,6 +80,19 @@ export default function CashierPOS() {
         if (stockError) throw stockError;
       }
 
+      // Cetak struk otomatis (non-blocking, tidak gagalkan transaksi kalau printer error)
+      const printResult = await printTransactionReceipt(
+        { ...trx, cashier: profile, payment_method: method },
+        trxItems.map((ti, idx) => ({
+          id: `temp-${idx}`,
+          transaction_id: trx.id,
+          product_id: ti.product_id,
+          product_name: ti.product_name,
+          price_at_sale: ti.price_at_sale,
+          quantity: ti.quantity,
+        }))
+      );
+
       await fetchProducts();
       clearCart();
       setShowPayment(false);
@@ -86,9 +100,10 @@ export default function CashierPOS() {
 
       Alert.alert(
         '✅ Transaksi Berhasil',
-        method === 'cash'
-          ? `Kembalian: Rp ${(paid - total).toLocaleString('id-ID')}`
-          : 'Pembayaran dikonfirmasi'
+        (method === 'cash'
+          ? `Kembalian: Rp ${(paid - total).toLocaleString('id-ID')}\n\n`
+          : '') +
+        (printResult.success ? '🖨️ Struk berhasil dicetak' : `⚠️ ${printResult.message}`)
       );
     } catch (error: any) {
       Alert.alert('Gagal', error.message || 'Terjadi kesalahan');

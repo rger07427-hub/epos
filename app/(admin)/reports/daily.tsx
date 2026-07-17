@@ -8,11 +8,13 @@ import {
   SafeAreaView,
   TouchableOpacity,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { Colors } from '../../../constants/colors';
 import Badge from '../../../components/shared/Badge';
+import { buildDailyReportText, printPlainText } from '../../../lib/receipt';
 
 interface DailySummary {
   totalRevenue: number;
@@ -37,6 +39,16 @@ export default function DailyReportScreen() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0]
   );
+  const [printing, setPrinting] = useState(false);
+
+  const handlePrint = async () => {
+    if (!summary) return;
+    setPrinting(true);
+    const text = buildDailyReportText(summary, formatDate(selectedDate));
+    const result = await printPlainText(text);
+    setPrinting(false);
+    Alert.alert(result.success ? 'Berhasil' : 'Gagal', result.message);
+  };
 
   const fetchDailyReport = useCallback(async () => {
     const startOfDay = `${selectedDate}T00:00:00`;
@@ -199,6 +211,18 @@ export default function DailyReportScreen() {
               {summary?.totalTransactions ?? 0} transaksi
             </Text>
           </View>
+
+          <TouchableOpacity
+            style={styles.printBtn}
+            onPress={handlePrint}
+            disabled={printing}
+          >
+            {printing ? (
+              <ActivityIndicator color={Colors.white} />
+            ) : (
+              <Text style={styles.printBtnText}>🖨️ Cetak Laporan Ini</Text>
+            )}
+          </TouchableOpacity>
 
           {/* Breakdown Metode */}
           <Text style={styles.sectionTitle}>Breakdown Pembayaran</Text>
@@ -495,4 +519,12 @@ const styles = StyleSheet.create({
     width: 30,
     textAlign: 'right',
   },
+  printBtn: {
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  printBtnText: { color: Colors.white, fontSize: 15, fontWeight: 'bold' },
 });

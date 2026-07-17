@@ -54,6 +54,16 @@ export default function ProfileScreen() {
         <InfoRow label="Role" value={profile?.role ?? '-'} />
       </View>
 
+      {/* Info Toko Button */}
+      {profile?.role === 'admin' && (
+        <TouchableOpacity
+          style={styles.printerBtn}
+          onPress={() => router.push('/(admin)/store-settings')}
+        >
+          <Text style={styles.printerBtnText}>🏬 Info Toko</Text>
+        </TouchableOpacity>
+      )}
+
       {/* Printer Button */}
       <TouchableOpacity
         style={styles.printerBtn}

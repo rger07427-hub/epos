@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Text } from 'react-native';
 import { useCartStore } from '../../store/useCartStore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
   return (
@@ -13,6 +14,7 @@ function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
 
 export default function KasirLayout() {
   const totalItems = useCartStore(s => s.getTotalItems());
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -24,8 +26,8 @@ export default function KasirLayout() {
           backgroundColor: Colors.white,
           borderTopWidth: 1,
           borderTopColor: Colors.gray[100],
-          height: 60,
-          paddingBottom: 8,
+          height: 60 + insets.bottom,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingTop: 4,
         },
         tabBarLabelStyle: {

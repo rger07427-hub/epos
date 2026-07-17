@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { Transaction } from '../../types';
@@ -18,6 +19,7 @@ import TransactionCard from '../../components/history/TransactionCard';
 import EmptyState from '../../components/shared/EmptyState';
 import Badge from '../../components/shared/Badge';
 import { useRealtimeTransactions } from '../../lib/useRealtimeTransactions';
+import { printTransactionReceipt } from '../../lib/receipt';
 
 const methodLabel: Record<string, string> = {
   cash: 'Tunai',
@@ -36,6 +38,21 @@ export default function HistoryScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selected, setSelected] = useState<Transaction | null>(null);
+  const [reprinting, setReprinting] = useState(false);
+
+  const handleReprint = async () => {
+    if (!selected) return;
+    setReprinting(true);
+    const result = await printTransactionReceipt(
+      selected,
+      selected.items ?? []
+    );
+    setReprinting(false);
+    Alert.alert(
+      result.success ? 'Berhasil' : 'Gagal',
+      result.message
+    );
+  };
 
   // Realtime subscription
   useRealtimeTransactions(() => {
@@ -213,6 +230,19 @@ export default function HistoryScreen() {
                     </>
                   )}
                 </View>
+
+                {/* Cetak Ulang */}
+                <TouchableOpacity
+                  style={styles.reprintBtn}
+                  onPress={handleReprint}
+                  disabled={reprinting}
+                >
+                  {reprinting ? (
+                    <ActivityIndicator color={Colors.white} />
+                  ) : (
+                    <Text style={styles.reprintBtnText}>🖨️ Cetak Ulang Struk</Text>
+                  )}
+                </TouchableOpacity>
               </ScrollView>
             )}
           </View>
@@ -403,5 +433,18 @@ const styles = StyleSheet.create({
   rowValueHighlight: {
     fontWeight: 'bold',
     color: Colors.success,
+  },
+  reprintBtn: {
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  reprintBtnText: {
+    color: Colors.white,
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });
