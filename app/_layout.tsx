@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/useAuthStore';
 import { useProductStore } from '../store/useProductStore';
 import { useStoreSettingsStore } from '../store/useStoreSettingsStore';
+import { StatusBar } from 'expo-status-bar';
 
 export default function RootLayout() {
   const { loadProfile } = useAuthStore();
@@ -42,5 +43,10 @@ export default function RootLayout() {
     return () => subscription.unsubscribe();
   }, []);
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <>
+      <StatusBar style="dark" />
+      <Stack screenOptions={{ headerShown: false }} />
+    </>
+  );
 }

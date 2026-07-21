@@ -1,124 +1,93 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
+import { Radius, Shadow, Spacing, FontSize } from '../../constants/theme';
+import AppIcon, { IconName } from '../../components/shared/AppIcon';
+
+const MENU_ITEMS: { icon: IconName; label: string; path: string; bg: string }[] = [
+  { icon: 'pos', label: 'POS', path: '/(admin)/pos', bg: Colors.softBlue },
+  { icon: 'rekapBulanan', label: 'Rekap Bulanan', path: '/(admin)/reports/monthly', bg: Colors.softGreen },
+  { icon: 'kategori', label: 'Kelola Kategori', path: '/(admin)/categories', bg: Colors.softPurple },
+  { icon: 'kasir', label: 'Kelola Kasir', path: '/(admin)/users', bg: Colors.softYellow },
+  { icon: 'printer', label: 'Pengaturan Printer', path: '/(admin)/printer-settings', bg: Colors.softBlue },
+  { icon: 'infoToko', label: 'Info Toko', path: '/(admin)/store-settings', bg: Colors.softRed },
+];
 
 export default function AdminDashboard() {
   const { profile } = useAuthStore();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.greeting}>
-          Halo, {profile?.full_name} 👋
-        </Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xl }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.headerBlock}>
+        <Text style={styles.greeting}>Halo, {profile?.full_name} 👋</Text>
+        <Text style={styles.subGreeting}>Ada yang bisa dibantu hari ini?</Text>
       </View>
 
       <View style={styles.menuGrid}>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/inventory')}
-        >
-          <Text style={styles.menuIcon}>📦</Text>
-          <Text style={styles.menuLabel}>Manajemen Stok</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/pos')}
-        >
-          <Text style={styles.menuIcon}>🛒</Text>
-          <Text style={styles.menuLabel}>POS</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/history')}
-        >
-          <Text style={styles.menuIcon}>📋</Text>
-          <Text style={styles.menuLabel}>Riwayat</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/reports/daily')}
-        >
-          <Text style={styles.menuIcon}>📊</Text>
-          <Text style={styles.menuLabel}>Laporan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/reports/monthly')}
-        >
-          <Text style={styles.menuIcon}>📅</Text>
-          <Text style={styles.menuLabel}>Rekap Bulanan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push('/(admin)/users')}
-        >
-          <Text style={styles.menuIcon}>👥</Text>
-          <Text style={styles.menuLabel}>Kelola Kasir</Text>
-        </TouchableOpacity>
+        {MENU_ITEMS.map((item) => (
+          <TouchableOpacity
+            key={item.path}
+            style={styles.menuItem}
+            onPress={() => router.push(item.path as any)}
+          >
+            <View style={[styles.iconBadge, { backgroundColor: item.bg }]}>
+              <AppIcon name={item.icon} size={26} color={Colors.primary} />
+            </View>
+            <Text style={styles.menuLabel}>{item.label}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
-  header: {
-    backgroundColor: Colors.primary,
-    padding: 24,
-    paddingTop: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
+  headerBlock: { paddingHorizontal: Spacing.lg, marginBottom: Spacing.lg },
   greeting: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.white,
+    fontFamily: 'Poppins_700Bold',
+    fontSize: FontSize.h1,
+    color: Colors.textPrimary,
+  },
+  subGreeting: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: FontSize.body2,
+    color: Colors.textSecondary,
+    marginTop: 4,
   },
   menuGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    padding: 16,
-    gap: 12,
+    paddingHorizontal: Spacing.md,
+    gap: Spacing.md,
   },
   menuItem: {
-    backgroundColor: Colors.white,
-    borderRadius: 16,
-    padding: 20,
-    width: '47%',
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.card,
+    padding: Spacing.lg,
+    width: '46%',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    ...Shadow.card,
   },
-  menuDisabled: {
-    opacity: 0.5,
-  },
-  menuIcon: {
-    fontSize: 32,
-    marginBottom: 8,
+  iconBadge: {
+    width: 52,
+    height: 52,
+    borderRadius: Radius.button,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.sm,
   },
   menuLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: FontSize.body1,
+    color: Colors.textPrimary,
     textAlign: 'center',
-  },
-  menuSoon: {
-    fontSize: 11,
-    color: Colors.gray[400],
-    marginTop: 4,
   },
 });

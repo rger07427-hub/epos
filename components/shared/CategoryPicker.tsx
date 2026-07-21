@@ -17,6 +17,8 @@ import {
 import { supabase } from '../../lib/supabase';
 import { Category } from '../../types';
 import { Colors } from '../../constants/colors';
+import { Radius, Spacing } from '../../constants/theme';
+import AppIcon from './AppIcon';
 
 interface Props {
   categories: Category[];
@@ -89,7 +91,7 @@ export default function CategoryPicker({
         <Text style={selectedCategory ? styles.dropdownText : styles.dropdownPlaceholder}>
           {selectedCategory ? selectedCategory.name : 'Pilih kategori'}
         </Text>
-        <Text style={styles.chevron}>▾</Text>
+        <AppIcon name="chevronDown" size={16} color={Colors.textSecondary} />
       </TouchableOpacity>
       {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -126,7 +128,7 @@ export default function CategoryPicker({
                           {item.name}
                         </Text>
                         {selected === item.id && (
-                          <Text style={styles.optionCheck}>✓</Text>
+                          <AppIcon name="check" size={16} color={Colors.primary} />
                         )}
                       </TouchableOpacity>
                     )}
@@ -176,75 +178,42 @@ export default function CategoryPicker({
 }
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 16 },
-  label: { fontSize: 14, fontWeight: '600', color: Colors.gray[700], marginBottom: 6 },
+  container: { marginBottom: Spacing.md },
+  label: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.textPrimary, marginBottom: 6 },
   required: { color: Colors.danger },
   dropdownBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.gray[50],
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: Colors.gray[50], borderWidth: 1.5, borderColor: Colors.gray[200],
+    borderRadius: Radius.button, paddingHorizontal: Spacing.md, paddingVertical: 12,
   },
   dropdownBtnError: { borderColor: Colors.danger },
-  dropdownText: { fontSize: 15, color: Colors.gray[800] },
-  dropdownPlaceholder: { fontSize: 15, color: Colors.gray[400] },
-  chevron: { fontSize: 16, color: Colors.gray[500] },
-  errorText: { fontSize: 12, color: Colors.danger, marginTop: 4 },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
+  dropdownText: { fontFamily: 'Poppins_400Regular', fontSize: 15, color: Colors.textPrimary },
+  dropdownPlaceholder: { fontFamily: 'Poppins_400Regular', fontSize: 15, color: Colors.gray[400] },
+  chevron: { fontSize: 16, color: Colors.textSecondary },
+  errorText: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.danger, marginTop: 4 },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   sheet: {
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 20,
-    paddingBottom: 32,
+    backgroundColor: Colors.surface, borderTopLeftRadius: Radius.card, borderTopRightRadius: Radius.card,
+    padding: Spacing.lg, paddingBottom: 32,
   },
-  handle: {
-    width: 40, height: 4, backgroundColor: Colors.gray[300],
-    borderRadius: 2, alignSelf: 'center', marginBottom: 12,
-  },
-  sheetTitle: { fontSize: 16, fontWeight: 'bold', color: Colors.gray[800], marginBottom: 12 },
+  handle: { width: 40, height: 4, backgroundColor: Colors.gray[300], borderRadius: 2, alignSelf: 'center', marginBottom: Spacing.md },
+  sheetTitle: { fontFamily: 'Poppins_700Bold', fontSize: 16, color: Colors.textPrimary, marginBottom: Spacing.md },
   optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 14, paddingHorizontal: 4, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  optionText: { fontSize: 15, color: Colors.gray[700] },
-  optionTextActive: { color: Colors.primary, fontWeight: '600' },
-  optionCheck: { color: Colors.primary, fontWeight: 'bold', fontSize: 16 },
-  emptyText: { textAlign: 'center', color: Colors.gray[400], paddingVertical: 20 },
+  optionText: { fontFamily: 'Poppins_400Regular', fontSize: 15, color: Colors.textPrimary },
+  optionTextActive: { color: Colors.primary, fontFamily: 'Poppins_700Bold' },
+  optionCheck: { color: Colors.primary, fontFamily: 'Poppins_700Bold', fontSize: 16 },
+  emptyText: { fontFamily: 'Poppins_400Regular', textAlign: 'center', color: Colors.gray[400], paddingVertical: 20 },
   addRow: { paddingVertical: 14, alignItems: 'center', marginTop: 4 },
-  addRowText: { color: Colors.primary, fontWeight: '600', fontSize: 15 },
-  addInputRow: { flexDirection: 'row', gap: 8, marginTop: 8 },
+  addRowText: { color: Colors.primary, fontFamily: 'Poppins_600SemiBold', fontSize: 15 },
+  addInputRow: { flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.sm },
   addInput: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: Colors.gray[800],
+    flex: 1, backgroundColor: Colors.gray[50], borderWidth: 1.5, borderColor: Colors.primary,
+    borderRadius: Radius.button, paddingHorizontal: 14, paddingVertical: 10,
+    fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textPrimary,
   },
-  addSaveBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addSaveText: { color: Colors.white, fontWeight: '600', fontSize: 13 },
+  addSaveBtn: { backgroundColor: Colors.primary, borderRadius: Radius.button, paddingHorizontal: 16, justifyContent: 'center', alignItems: 'center' },
+  addSaveText: { color: Colors.white, fontFamily: 'Poppins_600SemiBold', fontSize: 13 },
 });

@@ -1,13 +1,17 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet,
-  SafeAreaView, Alert, ActivityIndicator, Modal, TextInput,
+  Alert, ActivityIndicator, Modal, TextInput,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { Category } from '../../../types';
 import { Colors } from '../../../constants/colors';
+import { Radius, Shadow, Spacing } from '../../../constants/theme';
 import EmptyState from '../../../components/shared/EmptyState';
+import AppIcon from '../../../components/shared/AppIcon';
 
 export default function CategoriesScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -30,7 +34,12 @@ export default function CategoriesScreen() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchCategories(); }, [fetchCategories]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchCategories();
+    }, [fetchCategories])
+  );
 
   const openEdit = (cat: Category) => {
     setEditing(cat);
@@ -102,17 +111,17 @@ export default function CategoriesScreen() {
               <Text style={styles.rowName}>{item.name}</Text>
               <View style={styles.rowActions}>
                 <TouchableOpacity onPress={() => openEdit(item)} style={styles.actionBtn}>
-                  <Text style={styles.actionText}>✏️</Text>
+                  <AppIcon name="edit" size={18} color={Colors.primary} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleDelete(item)} style={styles.actionBtn}>
-                  <Text style={styles.actionText}>🗑️</Text>
+                  <AppIcon name="hapus" size={18} color={Colors.danger} />
                 </TouchableOpacity>
               </View>
             </View>
           )}
           ListEmptyComponent={
             <EmptyState
-              icon="🏷️"
+              icon="kategori"
               title="Belum ada kategori"
               subtitle="Tambahkan lewat form Tambah Produk, nanti muncul di sini"
             />
@@ -157,44 +166,35 @@ export default function CategoriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.gray[50] },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 16, backgroundColor: Colors.white,
-    borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  backText: { fontSize: 14, color: Colors.primary, fontWeight: '600', width: 80 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', color: Colors.gray[800] },
-  list: { padding: 16 },
+  backText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.primary, width: 80 },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 18, color: Colors.textPrimary },
+  list: { padding: Spacing.md },
   row: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    backgroundColor: Colors.white, borderRadius: 12, padding: 14, marginBottom: 10,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06,
-    shadowRadius: 4, elevation: 2,
+    backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.md, marginBottom: 10,
+    ...Shadow.card,
   },
-  rowName: { fontSize: 15, fontWeight: '600', color: Colors.gray[800] },
+  rowName: { fontFamily: 'Poppins_600SemiBold', fontSize: 15, color: Colors.textPrimary },
   rowActions: { flexDirection: 'row', gap: 12 },
   actionBtn: { padding: 4 },
   actionText: { fontSize: 18 },
-  modalOverlay: {
-    flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center',
-  },
-  modalBox: { backgroundColor: Colors.white, borderRadius: 16, padding: 20, width: '85%' },
-  modalTitle: { fontSize: 16, fontWeight: 'bold', color: Colors.gray[800], marginBottom: 12 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', alignItems: 'center', justifyContent: 'center' },
+  modalBox: { backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.lg, width: '85%' },
+  modalTitle: { fontFamily: 'Poppins_700Bold', fontSize: 16, color: Colors.textPrimary, marginBottom: Spacing.md },
   modalInput: {
-    borderWidth: 1.5, borderColor: Colors.gray[200], borderRadius: 10,
-    paddingHorizontal: 14, paddingVertical: 10, fontSize: 15, color: Colors.gray[800],
-    marginBottom: 16,
+    borderWidth: 1.5, borderColor: Colors.gray[200], borderRadius: Radius.button,
+    paddingHorizontal: 14, paddingVertical: 10, fontFamily: 'Poppins_400Regular',
+    fontSize: 15, color: Colors.textPrimary, marginBottom: Spacing.md,
   },
-  modalButtons: { flexDirection: 'row', gap: 10 },
-  modalCancelBtn: {
-    flex: 1, paddingVertical: 12, borderRadius: 10, borderWidth: 1.5,
-    borderColor: Colors.gray[300], alignItems: 'center',
-  },
-  modalCancelText: { color: Colors.gray[600], fontWeight: '600' },
-  modalSaveBtn: {
-    flex: 1, paddingVertical: 12, borderRadius: 10, backgroundColor: Colors.primary,
-    alignItems: 'center',
-  },
-  modalSaveText: { color: Colors.white, fontWeight: '600' },
+  modalButtons: { flexDirection: 'row', gap: Spacing.sm },
+  modalCancelBtn: { flex: 1, paddingVertical: 12, borderRadius: Radius.button, borderWidth: 1.5, borderColor: Colors.gray[300], alignItems: 'center' },
+  modalCancelText: { fontFamily: 'Poppins_600SemiBold', color: Colors.textSecondary },
+  modalSaveBtn: { flex: 1, paddingVertical: 12, borderRadius: Radius.button, backgroundColor: Colors.primary, alignItems: 'center' },
+  modalSaveText: { fontFamily: 'Poppins_600SemiBold', color: Colors.white },
 });

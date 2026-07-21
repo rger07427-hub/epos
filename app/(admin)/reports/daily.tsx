@@ -5,14 +5,16 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView,
   TouchableOpacity,
   RefreshControl,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import HamburgerButton from '../../../components/shared/HamburgerButton';
 import { supabase } from '../../../lib/supabase';
 import { Colors } from '../../../constants/colors';
+import { Radius, Shadow, Spacing, FontSize } from '../../../constants/theme';
 import Badge from '../../../components/shared/Badge';
 import { buildDailyReportText, printPlainText } from '../../../lib/receipt';
 
@@ -152,11 +154,10 @@ export default function DailyReportScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>← Kembali</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Laporan Harian</Text>
-        <View style={{ width: 80 }} />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <HamburgerButton />
+          <Text style={styles.headerTitle}>Laporan Harian</Text>
+        </View>
       </View>
 
       {/* Navigasi Tanggal */}
@@ -314,217 +315,51 @@ export default function DailyReportScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  backText: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '600',
-    width: 80,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
+  backText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.primary, width: 80 },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 18, color: Colors.textPrimary },
   dateNav: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md, paddingVertical: 12,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  dateNavBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.gray[100],
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dateNavDisabled: {
-    opacity: 0.3,
-  },
-  dateNavText: {
-    fontSize: 22,
-    color: Colors.gray[700],
-    lineHeight: 26,
-  },
-  dateNavTextDisabled: {
-    color: Colors.gray[400],
-  },
-  dateText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
-    textAlign: 'center',
-    flex: 1,
-  },
-  loader: {
-    marginTop: 48,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  mainCard: {
-    backgroundColor: Colors.primary,
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  mainLabel: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
-    marginBottom: 8,
-  },
-  mainValue: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: Colors.white,
-    marginBottom: 4,
-  },
-  mainSub: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.gray[700],
-    marginBottom: 10,
-    marginTop: 4,
-  },
-  methodGrid: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 20,
-  },
-  methodCard: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 12,
-    alignItems: 'center',
-    gap: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  methodAmount: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-    textAlign: 'center',
-  },
-  card: {
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: Colors.gray[400],
-    textAlign: 'center',
-    paddingVertical: 16,
-  },
+  dateNavBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.gray[100], alignItems: 'center', justifyContent: 'center' },
+  dateNavDisabled: { opacity: 0.3 },
+  dateNavText: { fontSize: 22, color: Colors.textSecondary, lineHeight: 26 },
+  dateNavTextDisabled: { color: Colors.gray[400] },
+  dateText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.textPrimary, textAlign: 'center', flex: 1 },
+  loader: { marginTop: 48 },
+  scrollContent: { padding: Spacing.md, paddingBottom: 32 },
+  mainCard: { backgroundColor: Colors.primary, borderRadius: Radius.card, padding: Spacing.lg, alignItems: 'center', marginBottom: Spacing.lg },
+  mainLabel: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: 'rgba(255,255,255,0.85)', marginBottom: 8 },
+  mainValue: { fontFamily: 'Poppins_700Bold', fontSize: FontSize.metric, color: Colors.white, marginBottom: 4 },
+  mainSub: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: 'rgba(255,255,255,0.85)' },
+  sectionTitle: { fontFamily: 'Poppins_700Bold', fontSize: 16, color: Colors.textPrimary, marginBottom: 10, marginTop: 4 },
+  methodGrid: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.lg },
+  methodCard: { flex: 1, backgroundColor: Colors.surface, borderRadius: Radius.button, padding: 12, alignItems: 'center', gap: 8, ...Shadow.card },
+  methodAmount: { fontFamily: 'Poppins_700Bold', fontSize: 12, color: Colors.textPrimary, textAlign: 'center' },
+  card: { backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.md, marginBottom: Spacing.lg, ...Shadow.card },
+  emptyText: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.gray[400], textAlign: 'center', paddingVertical: 16 },
   productRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
-    gap: 10,
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 10,
+    borderBottomWidth: 1, borderBottomColor: Colors.gray[100], gap: 10,
   },
-  productRank: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rankText: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: Colors.white,
-  },
-  productName: {
-    flex: 1,
-    fontSize: 14,
-    color: Colors.gray[800],
-  },
-  productRight: {
-    alignItems: 'flex-end',
-  },
-  productQty: {
-    fontSize: 12,
-    color: Colors.gray[500],
-  },
-  productTotal: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: Colors.primary,
-  },
-  hourRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-    gap: 10,
-  },
-  hourLabel: {
-    fontSize: 12,
-    color: Colors.gray[600],
-    width: 40,
-  },
-  hourBarContainer: {
-    flex: 1,
-    height: 8,
-    backgroundColor: Colors.gray[100],
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  hourBar: {
-    height: '100%',
-    backgroundColor: Colors.primary,
-    borderRadius: 4,
-  },
-  hourAmount: {
-    fontSize: 12,
-    color: Colors.gray[600],
-    width: 30,
-    textAlign: 'right',
-  },
-  printBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  printBtnText: { color: Colors.white, fontSize: 15, fontWeight: 'bold' },
+  productRank: { width: 28, height: 28, borderRadius: 14, backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center' },
+  rankText: { fontFamily: 'Poppins_700Bold', fontSize: 13, color: Colors.white },
+  productName: { flex: 1, fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textPrimary },
+  productRight: { alignItems: 'flex-end' },
+  productQty: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.textSecondary },
+  productTotal: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: Colors.primary },
+  hourRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6, gap: 10 },
+  hourLabel: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.textSecondary, width: 40 },
+  hourBarContainer: { flex: 1, height: 8, backgroundColor: Colors.gray[100], borderRadius: 4, overflow: 'hidden' },
+  hourBar: { height: '100%', backgroundColor: Colors.primary, borderRadius: 4 },
+  hourAmount: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.textSecondary, width: 30, textAlign: 'right' },
+  printBtn: { backgroundColor: Colors.primary, borderRadius: Radius.card, paddingVertical: 14, alignItems: 'center', marginBottom: Spacing.lg },
+  printBtnText: { color: Colors.white, fontFamily: 'Poppins_700Bold', fontSize: 15 },
 });

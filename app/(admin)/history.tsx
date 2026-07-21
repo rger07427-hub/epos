@@ -5,21 +5,23 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView,
   Modal,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../lib/supabase';
 import { Transaction } from '../../types';
 import { Colors } from '../../constants/colors';
+import { Radius, Shadow, Spacing } from '../../constants/theme';
 import TransactionCard from '../../components/history/TransactionCard';
 import EmptyState from '../../components/shared/EmptyState';
 import Badge from '../../components/shared/Badge';
 import { useRealtimeTransactions } from '../../lib/useRealtimeTransactions';
 import { printTransactionReceipt } from '../../lib/receipt';
+import HamburgerButton from '../../components/shared/HamburgerButton';
 
 const methodLabel: Record<string, string> = {
   cash: 'Tunai',
@@ -96,7 +98,10 @@ export default function HistoryScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Riwayat Transaksi</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <HamburgerButton />
+          <Text style={styles.headerTitle}>Riwayat Transaksi</Text>
+        </View>
       </View>
 
       {/* Ringkasan Hari Ini */}
@@ -132,7 +137,7 @@ export default function HistoryScreen() {
           )}
           ListEmptyComponent={
             <EmptyState
-              icon="📋"
+              icon="riwayat"
               title="Belum ada transaksi"
               subtitle="Transaksi akan muncul di sini setelah ada penjualan"
             />
@@ -278,173 +283,44 @@ function Row({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    padding: 16,
-    gap: 12,
-  },
-  summaryCard: {
-    flex: 1,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  summaryCardRight: {
-    borderLeftWidth: 3,
-    borderLeftColor: Colors.primary,
-  },
-  summaryValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.primary,
-    marginBottom: 4,
-  },
-  summaryLabel: {
-    fontSize: 12,
-    color: Colors.gray[500],
-  },
-  loader: {
-    marginTop: 48,
-  },
-  emptyContainer: {
-    flex: 1,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 19, color: Colors.textPrimary },
+  summaryRow: { flexDirection: 'row', padding: Spacing.md, gap: Spacing.sm },
+  summaryCard: { flex: 1, backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.md, ...Shadow.card },
+  summaryCardRight: { borderLeftWidth: 3, borderLeftColor: Colors.primary },
+  summaryValue: { fontFamily: 'Poppins_700Bold', fontSize: 20, color: Colors.primary, marginBottom: 4 },
+  summaryLabel: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.textSecondary },
+  loader: { marginTop: 48 },
+  emptyContainer: { flex: 1 },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   sheet: {
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 20,
-    paddingBottom: 40,
-    maxHeight: '85%',
+    backgroundColor: Colors.surface, borderTopLeftRadius: Radius.card, borderTopRightRadius: Radius.card,
+    padding: Spacing.lg, paddingBottom: 40, maxHeight: '85%',
   },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: Colors.gray[300],
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 16,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
-  closeText: {
-    fontSize: 18,
-    color: Colors.gray[500],
-    padding: 4,
-  },
-  infoSection: {
-    backgroundColor: Colors.gray[50],
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  itemsTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: Colors.gray[700],
-    marginBottom: 10,
-  },
+  handle: { width: 40, height: 4, backgroundColor: Colors.gray[300], borderRadius: 2, alignSelf: 'center', marginBottom: Spacing.md },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.md },
+  modalTitle: { fontFamily: 'Poppins_700Bold', fontSize: 18, color: Colors.textPrimary },
+  closeText: { fontSize: 18, color: Colors.textSecondary, padding: 4 },
+  infoSection: { backgroundColor: Colors.gray[50], borderRadius: Radius.button, padding: Spacing.md, marginBottom: Spacing.md },
+  itemsTitle: { fontFamily: 'Poppins_600SemiBold', fontSize: 15, color: Colors.textPrimary, marginBottom: 10 },
   itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
-    gap: 8,
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 8,
+    borderBottomWidth: 1, borderBottomColor: Colors.gray[100], gap: 8,
   },
-  productNameText: {
-    flex: 1,
-    fontSize: 14,
-    color: Colors.gray[800],
-  },
-  itemQty: {
-    fontSize: 13,
-    color: Colors.gray[500],
-    minWidth: 30,
-    textAlign: 'center',
-  },
-  itemTotal: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.primary,
-    minWidth: 90,
-    textAlign: 'right',
-  },
-  paymentSummary: {
-    backgroundColor: Colors.gray[50],
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 16,
-  },
-  rowItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  rowLabel: {
-    fontSize: 14,
-    color: Colors.gray[600],
-  },
-  rowValue: {
-    fontSize: 14,
-    color: Colors.gray[800],
-  },
-  rowValueBold: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: Colors.gray[900],
-  },
-  rowValueHighlight: {
-    fontWeight: 'bold',
-    color: Colors.success,
-  },
-  reprintBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  reprintBtnText: {
-    color: Colors.white,
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
+  itemName: { flex: 1, fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textPrimary },
+  productNameText: { flex: 1, fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textPrimary },
+  itemQty: { fontFamily: 'Poppins_400Regular', fontSize: 13, color: Colors.textSecondary, minWidth: 30, textAlign: 'center' },
+  itemTotal: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.primary, minWidth: 90, textAlign: 'right' },
+  paymentSummary: { backgroundColor: Colors.gray[50], borderRadius: Radius.button, padding: Spacing.md, marginTop: Spacing.md },
+  rowItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6 },
+  rowLabel: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textSecondary },
+  rowValue: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textPrimary },
+  rowValueBold: { fontFamily: 'Poppins_700Bold', fontSize: 16, color: Colors.textPrimary },
+  rowValueHighlight: { fontFamily: 'Poppins_700Bold', color: Colors.success },
+  reprintBtn: { backgroundColor: Colors.primary, borderRadius: Radius.button, paddingVertical: 14, alignItems: 'center', marginTop: Spacing.md, marginBottom: Spacing.xs },
+  reprintBtnText: { color: Colors.white, fontFamily: 'Poppins_700Bold', fontSize: 15 },
 });

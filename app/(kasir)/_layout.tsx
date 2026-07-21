@@ -1,15 +1,11 @@
 import { Tabs } from 'expo-router';
 import { Colors } from '../../constants/colors';
-import { Text } from 'react-native';
 import { useCartStore } from '../../store/useCartStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AppIcon, { IconName } from '../../components/shared/AppIcon';
 
-function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
-  return (
-    <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>
-      {icon}
-    </Text>
-  );
+function TabIcon({ name, focused }: { name: IconName; focused: boolean }) {
+  return <AppIcon name={name} size={22} color={focused ? Colors.primary : Colors.gray[400]} />;
 }
 
 export default function KasirLayout() {
@@ -41,7 +37,7 @@ export default function KasirLayout() {
         options={{
           title: totalItems > 0 ? `POS (${totalItems})` : 'POS',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🛒" focused={focused} />
+            <TabIcon name="pos" focused={focused} />
           ),
         }}
       />
@@ -50,7 +46,7 @@ export default function KasirLayout() {
         options={{
           title: 'Riwayat',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📋" focused={focused} />
+            <TabIcon name="riwayat" focused={focused} />
           ),
         }}
       />
@@ -59,7 +55,7 @@ export default function KasirLayout() {
         options={{
           title: 'Profil',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon="👤" focused={focused} />
+            <TabIcon name="profil" focused={focused} />
           ),
         }}
       />

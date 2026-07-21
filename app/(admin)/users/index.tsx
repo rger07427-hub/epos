@@ -5,13 +5,15 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView,
   RefreshControl,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { CashierUser } from '../../../types';
 import { Colors } from '../../../constants/colors';
+import { Radius, Shadow, Spacing } from '../../../constants/theme';
+import HamburgerButton from '../../../components/shared/HamburgerButton';
 import EmptyState from '../../../components/shared/EmptyState';
 import Badge from '../../../components/shared/Badge';
 
@@ -74,7 +76,10 @@ export default function UsersScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Manajemen Kasir</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <HamburgerButton />
+          <Text style={styles.headerTitle}>Manajemen Kasir</Text>
+        </View>
       </View>
 
       {/* List */}
@@ -91,7 +96,7 @@ export default function UsersScreen() {
           renderItem={renderUser}
           ListEmptyComponent={
             <EmptyState
-              icon="👥"
+              icon="kasir"
               title="Belum ada pengguna"
               subtitle="Tambah kasir melalui dashboard Supabase"
             />
@@ -117,76 +122,24 @@ export default function UsersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
-  loader: {
-    marginTop: 48,
-  },
-  listContent: {
-    padding: 16,
-    gap: 10,
-  },
-  emptyContainer: {
-    flex: 1,
-  },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 19, color: Colors.textPrimary },
+  loader: { marginTop: 48 },
+  listContent: { padding: Spacing.md, gap: 10 },
+  emptyContainer: { flex: 1 },
   userCard: {
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-    marginBottom: 10,
+    backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.md,
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginBottom: 10,
+    ...Shadow.card,
   },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.white,
-  },
-  userInfo: {
-    flex: 1,
-    gap: 4,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  userName: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
-  joinDate: {
-    fontSize: 11,
-    color: Colors.gray[400],
-    marginTop: 4,
-  },
+  avatar: { width: 48, height: 48, borderRadius: Radius.button, backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center' },
+  avatarText: { fontFamily: 'Poppins_700Bold', fontSize: 20, color: Colors.white },
+  userInfo: { flex: 1, gap: 4 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  userName: { fontFamily: 'Poppins_700Bold', fontSize: 15, color: Colors.textPrimary },
+  joinDate: { fontFamily: 'Poppins_400Regular', fontSize: 11, color: Colors.gray[400], marginTop: 4 },
 });

@@ -7,15 +7,16 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-  SafeAreaView,
   Switch,
   TextInput,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { supabase } from '../../../lib/supabase';
 import { useProductStore } from '../../../store/useProductStore';
 import { Category } from '../../../types';
 import { Colors } from '../../../constants/colors';
+import { Radius, Spacing } from '../../../constants/theme';
 import FormField from '../../../components/shared/FormField';
 import CategoryPicker from '../../../components/shared/CategoryPicker';
 
@@ -297,158 +298,35 @@ export default function EditProductScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-  },
-  loadingText: {
-    fontSize: 14,
-    color: Colors.gray[500],
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
+  loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
+  loadingText: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textSecondary },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  backButton: {
-    width: 80,
-  },
-  backText: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
-  deleteButton: {
-    width: 90,
-    alignItems: 'flex-end',
-  },
-  deleteText: {
-    fontSize: 13,
-    color: Colors.danger,
-    fontWeight: '600',
-  },
-  scroll: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 32,
-  },
+  backButton: { width: 80 },
+  backText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.primary },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 18, color: Colors.textPrimary },
+  deleteButton: { width: 90, alignItems: 'flex-end' },
+  deleteText: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: Colors.danger },
+  scroll: { flex: 1 },
+  scrollContent: { padding: Spacing.md, paddingBottom: 32 },
   switchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.md,
+    marginBottom: Spacing.md, borderWidth: 1.5, borderColor: Colors.gray[200],
   },
-  switchLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
-  },
-  switchSubLabel: {
-    fontSize: 12,
-    color: Colors.gray[500],
-    marginTop: 2,
-  },
+  switchLabel: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.textPrimary },
+  switchSubLabel: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
   stockContainer: {
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
+    backgroundColor: Colors.surface, borderRadius: Radius.card, padding: Spacing.md,
+    marginBottom: Spacing.md, borderWidth: 1.5, borderColor: Colors.primary,
   },
-  stockNote: {
-    backgroundColor: Colors.gray[50],
-    borderRadius: 8,
-    padding: 10,
-    marginTop: -8,
-  },
-  stockNoteText: {
-    fontSize: 12,
-    color: Colors.gray[500],
-  },
-  unitContainer: {
-    marginBottom: 16,
-  },
-  unitLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
-    marginBottom: 8,
-  },
-  required: {
-    color: Colors.danger,
-  },
-  unitList: {
-    gap: 8,
-    paddingVertical: 4,
-  },
-  unitChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: Colors.gray[100],
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
-  },
-  unitChipActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  unitText: {
-    fontSize: 14,
-    color: Colors.gray[600],
-    fontWeight: '500',
-  },
-  unitTextActive: {
-    color: Colors.white,
-    fontWeight: '600',
-  },
-  submitButton: {
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  submitDisabled: {
-    backgroundColor: Colors.gray[400],
-  },
-  submitText: {
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  customInput: {
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: Colors.gray[800],
-  },
+  stockNote: { backgroundColor: Colors.softBlue, borderRadius: Radius.button, padding: 10, marginTop: -8 },
+  stockNoteText: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.primary },
+  submitButton: { backgroundColor: Colors.primary, borderRadius: Radius.card, paddingVertical: 16, alignItems: 'center', marginTop: Spacing.xs },
+  submitDisabled: { backgroundColor: Colors.gray[400] },
+  submitText: { color: Colors.white, fontFamily: 'Poppins_700Bold', fontSize: 16 },
 });

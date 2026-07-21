@@ -1,5 +1,6 @@
 import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { Colors } from '../../constants/colors';
+import { Radius, Spacing } from '../../constants/theme';
 
 interface Props extends TextInputProps {
   label: string;
@@ -7,12 +8,7 @@ interface Props extends TextInputProps {
   required?: boolean;
 }
 
-export default function FormField({
-  label,
-  error,
-  required,
-  ...props
-}: Props) {
+export default function FormField({ label, error, required, ...props }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>
@@ -30,34 +26,14 @@ export default function FormField({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
-    marginBottom: 6,
-  },
-  required: {
-    color: Colors.danger,
-  },
+  container: { marginBottom: Spacing.md },
+  label: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.textPrimary, marginBottom: 6 },
+  required: { color: Colors.danger },
   input: {
-    backgroundColor: Colors.gray[50],
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: Colors.gray[800],
+    backgroundColor: Colors.gray[50], borderWidth: 1.5, borderColor: Colors.gray[200],
+    borderRadius: Radius.button, paddingHorizontal: Spacing.md, paddingVertical: 12,
+    fontFamily: 'Poppins_400Regular', fontSize: 15, color: Colors.textPrimary,
   },
-  inputError: {
-    borderColor: Colors.danger,
-  },
-  errorText: {
-    fontSize: 12,
-    color: Colors.danger,
-    marginTop: 4,
-  },
+  inputError: { borderColor: Colors.danger },
+  errorText: { fontFamily: 'Poppins_400Regular', fontSize: 12, color: Colors.danger, marginTop: 4 },
 });

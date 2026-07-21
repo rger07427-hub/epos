@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
+import { Radius } from '../../constants/theme';
 
 interface Props {
   label: string;
@@ -8,11 +9,11 @@ interface Props {
 
 export default function Badge({ label, type = 'default' }: Props) {
   const colorMap = {
-    success: { bg: '#dcfce7', text: '#166534' },
-    warning: { bg: '#fef9c3', text: '#854d0e' },
-    danger: { bg: '#fee2e2', text: '#991b1b' },
-    info: { bg: '#dbeafe', text: '#1e40af' },
-    default: { bg: Colors.gray[100], text: Colors.gray[600] },
+    success: { bg: Colors.softGreen, text: '#1B5E20' },
+    warning: { bg: Colors.softYellow, text: '#B45309' },
+    danger: { bg: Colors.softRed, text: '#B91C1C' },
+    info: { bg: Colors.softBlue, text: Colors.primaryDark },
+    default: { bg: Colors.gray[100], text: Colors.textSecondary },
   };
   const color = colorMap[type];
 
@@ -24,14 +25,6 @@ export default function Badge({ label, type = 'default' }: Props) {
 }
 
 const styles = StyleSheet.create({
-  badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
+  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: Radius.chip, alignSelf: 'flex-start' },
+  text: { fontFamily: 'Poppins_600SemiBold', fontSize: 12 },
 });

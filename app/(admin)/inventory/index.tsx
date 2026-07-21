@@ -7,13 +7,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import HamburgerButton from '../../../components/shared/HamburgerButton';
 import { useAuthStore } from '../../../store/useAuthStore';
 import { useProductStore } from '../../../store/useProductStore';
 import { Product } from '../../../types';
 import { Colors } from '../../../constants/colors';
+import { Radius, Spacing } from '../../../constants/theme';
 import ProductCard from '../../../components/inventory/ProductCard';
 import EmptyState from '../../../components/shared/EmptyState';
 
@@ -46,18 +48,15 @@ export default function InventoryScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Manajemen Stok</Text>
-        <View style={styles.headerActions}>
-          <TouchableOpacity
-            style={styles.categoryLinkBtn}
-            onPress={() => router.push('/(admin)/categories')}
-          >
-            <Text style={styles.categoryLinkText}>🏷️ Kategori</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <HamburgerButton />
+          <Text style={styles.headerTitle}>Manajemen Stok</Text>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity style={styles.categoryLinkBtn} onPress={() => router.push('/(admin)/categories')}>
+            <Text style={styles.categoryLinkText}>🏷️</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => router.push('/(admin)/inventory/add')}
-          >
+          <TouchableOpacity style={styles.addButton} onPress={() => router.push('/(admin)/inventory/add')}>
             <Text style={styles.addButtonText}>+ Tambah</Text>
           </TouchableOpacity>
         </View>
@@ -123,7 +122,7 @@ export default function InventoryScreen() {
           )}
           ListEmptyComponent={
             <EmptyState
-              icon="📦"
+              icon="stok"
               title="Belum ada produk"
               subtitle="Tap tombol Tambah untuk menambahkan produk baru"
             />
@@ -139,103 +138,37 @@ export default function InventoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 19, color: Colors.textPrimary },
   categoryLinkBtn: {
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    borderWidth: 1.5, borderColor: Colors.primary, paddingHorizontal: 10,
+    paddingVertical: 8, borderRadius: Radius.button,
   },
-  categoryLinkText: {
-    color: Colors.primary,
-    fontWeight: '600',
-    fontSize: 13,
-  },
-  addButton: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  addButtonText: {
-    color: Colors.white,
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.white,
-  },
+  categoryLinkText: { fontSize: 14 },
+  addButton: { backgroundColor: Colors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: Radius.button },
+  addButtonText: { color: Colors.white, fontFamily: 'Poppins_600SemiBold', fontSize: 14 },
+  searchContainer: { paddingHorizontal: Spacing.md, paddingVertical: Spacing.sm, backgroundColor: Colors.surface },
   searchInput: {
-    backgroundColor: Colors.gray[50],
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: Colors.gray[800],
+    backgroundColor: Colors.gray[50], borderWidth: 1.5, borderColor: Colors.gray[200],
+    borderRadius: Radius.button, paddingHorizontal: Spacing.md, paddingVertical: 10,
+    fontFamily: 'Poppins_400Regular', fontSize: 15, color: Colors.textPrimary,
   },
   categoryContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 8,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
-    flexWrap: 'wrap',
+    flexDirection: 'row', paddingHorizontal: Spacing.md, paddingVertical: 10, gap: 8,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100], flexWrap: 'wrap',
   },
   categoryChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: Colors.gray[100],
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
+    paddingHorizontal: 14, paddingVertical: 6, borderRadius: Radius.chip,
+    backgroundColor: Colors.gray[100], borderWidth: 1.5, borderColor: Colors.gray[200],
   },
-  categoryChipActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  categoryText: {
-    fontSize: 13,
-    color: Colors.gray[600],
-    fontWeight: '500',
-  },
-  categoryTextActive: {
-    color: Colors.white,
-    fontWeight: '600',
-  },
-  loader: {
-    marginTop: 48,
-  },
-  emptyContainer: {
-    flex: 1,
-  },
+  categoryChipActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  categoryText: { fontFamily: 'Poppins_500Medium', fontSize: 13, color: Colors.textSecondary },
+  categoryTextActive: { color: Colors.white, fontFamily: 'Poppins_700Bold' },
+  loader: { marginTop: 48 },
+  emptyContainer: { flex: 1 },
 });

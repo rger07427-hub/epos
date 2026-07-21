@@ -15,6 +15,7 @@ import {
   Platform,
 } from 'react-native';
 import { Colors } from '../../constants/colors';
+import AppIcon, { IconName } from '../shared/AppIcon';
 
 interface Props {
   visible: boolean;
@@ -60,10 +61,10 @@ export default function PaymentModal({
     setMethod('cash');
   };
 
-  const methods: { key: 'cash' | 'qris' | 'transfer'; label: string; icon: string }[] = [
-    { key: 'cash', label: 'Tunai', icon: '💵' },
-    { key: 'qris', label: 'QRIS', icon: '📱' },
-    { key: 'transfer', label: 'Transfer', icon: '🏦' },
+  const methods: { key: 'cash' | 'qris' | 'transfer'; label: string; icon: IconName }[] = [
+    { key: 'cash', label: 'Tunai', icon: 'cash' },
+    { key: 'qris', label: 'QRIS', icon: 'qris' },
+    { key: 'transfer', label: 'Transfer', icon: 'transfer' },
   ];
 
   return (
@@ -105,7 +106,7 @@ export default function PaymentModal({
                       ]}
                       onPress={() => setMethod(m.key)}
                     >
-                      <Text style={styles.methodIcon}>{m.icon}</Text>
+                      <AppIcon name={m.icon} size={22} color={method === m.key ? Colors.primary : Colors.gray[400]} />
                       <Text style={[
                         styles.methodLabel,
                         method === m.key && styles.methodLabelActive,

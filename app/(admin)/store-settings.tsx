@@ -5,15 +5,16 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Colors } from '../../constants/colors';
+import { Radius, Shadow, Spacing } from '../../constants/theme';
 import { useStoreSettingsStore } from '../../store/useStoreSettingsStore';
 
 export default function StoreSettingsScreen() {
@@ -135,50 +136,23 @@ export default function StoreSettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.gray[50] },
+  container: { flex: 1, backgroundColor: Colors.background },
   loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  backText: { fontSize: 14, color: Colors.primary, fontWeight: '600', width: 80 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', color: Colors.gray[800] },
-  content: { padding: 16 },
-  note: {
-    fontSize: 13,
-    color: Colors.gray[500],
-    marginBottom: 16,
-    fontStyle: 'italic',
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[700],
-    marginBottom: 6,
-    marginTop: 12,
-  },
+  backText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.primary, width: 80 },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 18, color: Colors.textPrimary },
+  content: { padding: Spacing.md },
+  note: { fontFamily: 'Poppins_400Regular', fontSize: 13, color: Colors.textSecondary, marginBottom: Spacing.md, fontStyle: 'italic' },
+  label: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.textPrimary, marginBottom: 6, marginTop: Spacing.sm },
   input: {
-    backgroundColor: Colors.white,
-    borderWidth: 1.5,
-    borderColor: Colors.gray[200],
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: Colors.gray[800],
+    backgroundColor: Colors.surface, borderWidth: 1.5, borderColor: Colors.gray[200],
+    borderRadius: Radius.button, paddingHorizontal: Spacing.md, paddingVertical: 12,
+    fontFamily: 'Poppins_400Regular', fontSize: 15, color: Colors.textPrimary,
   },
-  saveBtn: {
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  saveBtnText: { color: Colors.white, fontSize: 16, fontWeight: 'bold' },
+  saveBtn: { backgroundColor: Colors.primary, borderRadius: Radius.card, paddingVertical: 16, alignItems: 'center', marginTop: Spacing.lg },
+  saveBtnText: { color: Colors.white, fontFamily: 'Poppins_700Bold', fontSize: 16 },
 });

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
+import { Radius, Shadow, Spacing, FontSize } from '../../constants/theme';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -35,8 +36,10 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.card}>
-        <Text style={styles.logo}>🏪</Text>
-        <Text style={styles.title}>POS App</Text>
+        <View style={styles.logoBadge}>
+          <Text style={styles.logoText}>X</Text>
+        </View>
+        <Text style={styles.title}>XPOS</Text>
         <Text style={styles.subtitle}>Masuk ke akun Anda</Text>
 
         <TextInput
@@ -79,66 +82,74 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.background,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    padding: Spacing.lg,
   },
   card: {
-    backgroundColor: Colors.white,
-    borderRadius: 16,
-    padding: 32,
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.card,
+    padding: Spacing.xl,
     width: '100%',
     maxWidth: 400,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
+    ...Shadow.card,
   },
-  logo: {
-    fontSize: 48,
-    marginBottom: 8,
+  logoBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: Radius.button,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: Spacing.md,
+  },
+  logoText: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 24,
+    color: Colors.white,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: Colors.primary,
+    fontFamily: 'Poppins_700Bold',
+    fontSize: FontSize.h1,
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: 14,
-    color: Colors.gray[500],
-    marginBottom: 32,
+    fontFamily: 'Poppins_400Regular',
+    fontSize: FontSize.body2,
+    color: Colors.textSecondary,
+    marginBottom: Spacing.lg,
   },
   input: {
     width: '100%',
     height: 52,
     borderWidth: 1.5,
     borderColor: Colors.gray[200],
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: Colors.gray[800],
-    marginBottom: 16,
+    borderRadius: Radius.button,
+    paddingHorizontal: Spacing.md,
+    fontFamily: 'Poppins_400Regular',
+    fontSize: FontSize.body1,
+    color: Colors.textPrimary,
+    marginBottom: Spacing.md,
     backgroundColor: Colors.gray[50],
   },
   button: {
     width: '100%',
     height: 52,
     backgroundColor: Colors.primary,
-    borderRadius: 10,
+    borderRadius: Radius.button,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: Spacing.xs,
   },
   buttonDisabled: {
     backgroundColor: Colors.gray[400],
   },
   buttonText: {
     color: Colors.white,
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: FontSize.body1,
   },
 });

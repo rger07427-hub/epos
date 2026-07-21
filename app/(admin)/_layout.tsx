@@ -1,122 +1,78 @@
 import { Tabs } from 'expo-router';
-import { Colors } from '../../constants/colors';
-import { Text } from 'react-native';
-import { useCartStore } from '../../store/useCartStore';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors } from '../../constants/colors';
+import { useCartStore } from '../../store/useCartStore';
+import AdminDrawer from '../../components/shared/AdminDrawer';
+import AppIcon, { IconName } from '../../components/shared/AppIcon';
 
-function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
-  return (
-    <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.5 }}>
-      {icon}
-    </Text>
-  );
+function TabIcon({ name, focused }: { name: IconName; focused: boolean }) {
+  return <AppIcon name={name} size={22} color={focused ? Colors.primary : Colors.gray[400]} />;
 }
 
 export default function AdminLayout() {
-  const totalItems = useCartStore(s => s.getTotalItems());
   const insets = useSafeAreaInsets();
+  const totalItems = useCartStore((s) => s.getTotalItems());
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.gray[400],
-        tabBarStyle: {
-          backgroundColor: Colors.white,
-          borderTopWidth: 1,
-          borderTopColor: Colors.gray[100],
-          height: 60 + insets.bottom,
-          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
-          paddingTop: 4,
-        },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="dashboard"
-        options={{
-          title: 'Dashboard',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🏠" focused={focused} />
-          ),
+    <View style={{ flex: 1 }}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: Colors.primary,
+          tabBarInactiveTintColor: Colors.gray[400],
+          tabBarStyle: {
+            backgroundColor: Colors.surface,
+            borderTopWidth: 1,
+            borderTopColor: Colors.gray[100],
+            height: 60 + insets.bottom,
+            paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
+            paddingTop: 4,
+          },
+          tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
         }}
-      />
-      <Tabs.Screen
-        name="pos"
-        options={{
-          title: totalItems > 0 ? `POS (${totalItems})` : 'POS',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="🛒" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="inventory/index"
-        options={{
-          title: 'Stok',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📦" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="inventory/add"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="inventory/edit"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="history"
-        options={{
-          title: 'Riwayat',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📋" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="reports/daily"
-        options={{
-          title: 'Laporan',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="📊" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="reports/monthly"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="users/index"
-        options={{
-          title: 'Kasir',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="👥" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profil',
-          tabBarIcon: ({ focused }) => (
-            <TabIcon icon="👤" focused={focused} />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="inventory"
+          options={{
+            title: 'Stok',
+            tabBarIcon: ({ focused }) => <TabIcon name="stok" focused={focused} />,
+            href: '/(admin)/inventory',
+          }}
+        />
+        <Tabs.Screen
+          name="history"
+          options={{
+            title: 'Riwayat',
+            tabBarIcon: ({ focused }) => <TabIcon name="riwayat" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="reports"
+          options={{
+            title: 'Laporan',
+            tabBarIcon: ({ focused }) => <TabIcon name="laporan" focused={focused} />,
+            href: '/(admin)/reports/daily',
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: 'Profil',
+            tabBarIcon: ({ focused }) => <TabIcon name="profil" focused={focused} />,
+          }}
+        />
+
+        {/* Route ini tetap ada & bisa diakses, TAPI disembunyikan dari tab bar */}
+        <Tabs.Screen name="dashboard" options={{ href: null }} />
+        <Tabs.Screen name="pos" options={{ href: null }} />
+        <Tabs.Screen name="categories" options={{ href: null }} />
+        <Tabs.Screen name="users" options={{ href: null }} />
+        <Tabs.Screen name="printer-settings" options={{ href: null }} />
+        <Tabs.Screen name="store-settings" options={{ href: null }} />
+      </Tabs>
+
+      <AdminDrawer />
+    </View>
   );
 }

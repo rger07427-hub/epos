@@ -3,12 +3,14 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import HamburgerButton from '../../components/shared/HamburgerButton';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
+import { Radius, Shadow, Spacing } from '../../constants/theme';
 
 export default function ProfileScreen() {
   const { profile, signOut } = useAuthStore();
@@ -31,7 +33,10 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Profil</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <HamburgerButton />
+          <Text style={styles.headerTitle}>Profil</Text>
+        </View>
       </View>
 
       {/* Avatar */}
@@ -93,116 +98,43 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[50],
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    paddingHorizontal: Spacing.md, paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-  },
+  headerTitle: { fontFamily: 'Poppins_700Bold', fontSize: 19, color: Colors.textPrimary },
   avatarSection: {
-    alignItems: 'center',
-    paddingVertical: 32,
-    backgroundColor: Colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
-    marginBottom: 16,
+    alignItems: 'center', paddingVertical: Spacing.xl,
+    backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
+    width: 80, height: 80, borderRadius: Radius.card,
+    backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center', marginBottom: Spacing.sm,
   },
-  avatarText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: Colors.white,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.gray[800],
-    marginBottom: 8,
-  },
-  roleBadge: {
-    backgroundColor: '#eef2ff',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  roleText: {
-    fontSize: 14,
-    color: Colors.primary,
-    fontWeight: '600',
-  },
+  avatarText: { fontFamily: 'Poppins_700Bold', fontSize: 32, color: Colors.white },
+  name: { fontFamily: 'Poppins_700Bold', fontSize: 20, color: Colors.textPrimary, marginBottom: Spacing.sm },
+  roleBadge: { backgroundColor: Colors.softBlue, paddingHorizontal: 16, paddingVertical: 6, borderRadius: Radius.chip },
+  roleText: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.primary },
   infoCard: {
-    backgroundColor: Colors.white,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: Colors.surface, margin: Spacing.md, borderRadius: Radius.card, padding: Spacing.md,
+    ...Shadow.card,
   },
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.gray[100],
+    flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10,
+    borderBottomWidth: 1, borderBottomColor: Colors.gray[100],
   },
-  infoLabel: {
-    fontSize: 14,
-    color: Colors.gray[500],
-  },
-  infoValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.gray[800],
-  },
+  infoLabel: { fontFamily: 'Poppins_400Regular', fontSize: 14, color: Colors.textSecondary },
+  infoValue: { fontFamily: 'Poppins_600SemiBold', fontSize: 14, color: Colors.textPrimary },
   printerBtn: {
-    marginHorizontal: 16,
-    marginBottom: 12,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
+    marginHorizontal: Spacing.md, marginBottom: 12, backgroundColor: Colors.surface,
+    borderRadius: Radius.card, padding: Spacing.md, alignItems: 'center',
+    borderWidth: 1.5, borderColor: Colors.primary,
   },
-  printerBtnText: {
-    fontSize: 16,
-    color: Colors.primary,
-    fontWeight: '600',
-  },
+  printerBtnText: { fontFamily: 'Poppins_600SemiBold', fontSize: 16, color: Colors.primary },
   logoutBtn: {
-    marginHorizontal: 16,
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: Colors.danger,
+    marginHorizontal: Spacing.md, backgroundColor: Colors.surface, borderRadius: Radius.card,
+    padding: Spacing.md, alignItems: 'center', borderWidth: 1.5, borderColor: Colors.danger,
   },
-  logoutText: {
-    fontSize: 16,
-    color: Colors.danger,
-    fontWeight: '600',
-  },
+  logoutText: { fontFamily: 'Poppins_600SemiBold', fontSize: 16, color: Colors.danger },
 });
