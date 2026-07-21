@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
@@ -36,10 +37,11 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.card}>
-        <View style={styles.logoBadge}>
-          <Text style={styles.logoText}>X</Text>
-        </View>
-        <Text style={styles.title}>XPOS</Text>
+        <Image
+          source={require('../../assets/logo-wordmark.png')}
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
         <Text style={styles.subtitle}>Masuk ke akun Anda</Text>
 
         <TextInput
@@ -96,25 +98,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...Shadow.card,
   },
-  logoBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: Radius.button,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.md,
-  },
-  logoText: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 24,
-    color: Colors.white,
-  },
-  title: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: FontSize.h1,
-    color: Colors.textPrimary,
-    marginBottom: 4,
+  logoImage: {
+    width: 200,
+    height: 100,
+    marginBottom: Spacing.sm,
   },
   subtitle: {
     fontFamily: 'Poppins_400Regular',
