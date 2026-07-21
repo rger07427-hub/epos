@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { Colors } from '../../constants/colors';
 import { Radius, Shadow, Spacing, FontSize } from '../../constants/theme';
 import AppIcon, { IconName } from '../../components/shared/AppIcon';
+import HamburgerButton from '../../components/shared/HamburgerButton';
 
 const MENU_ITEMS: { icon: IconName; label: string; path: string; bg: string }[] = [
   { icon: 'pos', label: 'POS', path: '/(admin)/pos', bg: Colors.softBlue },
@@ -26,7 +27,10 @@ export default function AdminDashboard() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.headerBlock}>
-        <Text style={styles.greeting}>Halo, {profile?.full_name} 👋</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+          <HamburgerButton />
+          <Text style={styles.greeting}>Halo, {profile?.full_name} 👋</Text>
+        </View>
         <Text style={styles.subGreeting}>Ada yang bisa dibantu hari ini?</Text>
       </View>
 

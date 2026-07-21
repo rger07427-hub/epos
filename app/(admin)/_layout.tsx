@@ -33,26 +33,24 @@ export default function AdminLayout() {
         }}
       >
         <Tabs.Screen
+          name="dashboard"
+          options={{
+            title: 'Dashboard',
+            tabBarIcon: ({ focused }) => <TabIcon name="dashboard" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
           name="inventory"
           options={{
             title: 'Stok',
             tabBarIcon: ({ focused }) => <TabIcon name="stok" focused={focused} />,
-            href: '/(admin)/inventory',
-          }}
-        />
-        <Tabs.Screen
-          name="history"
-          options={{
-            title: 'Riwayat',
-            tabBarIcon: ({ focused }) => <TabIcon name="riwayat" focused={focused} />,
           }}
         />
         <Tabs.Screen
           name="reports"
           options={{
-            title: 'Laporan',
+            title: 'Rekap Harian',
             tabBarIcon: ({ focused }) => <TabIcon name="laporan" focused={focused} />,
-            href: '/(admin)/reports/daily',
           }}
         />
         <Tabs.Screen
@@ -63,9 +61,10 @@ export default function AdminLayout() {
           }}
         />
 
-        {/* Route ini tetap ada & bisa diakses, TAPI disembunyikan dari tab bar */}
-        <Tabs.Screen name="dashboard" options={{ href: null }} />
+        {/* Route ini TETAP ada & bisa diakses lewat drawer,
+            TAPI disembunyikan dari tab bar */}
         <Tabs.Screen name="pos" options={{ href: null }} />
+        <Tabs.Screen name="history" options={{ href: null }} />
         <Tabs.Screen name="categories" options={{ href: null }} />
         <Tabs.Screen name="users" options={{ href: null }} />
         <Tabs.Screen name="printer-settings" options={{ href: null }} />

@@ -10,8 +10,8 @@
     "icon": "./assets/icon.png",
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F8F9FA"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#1E98A8"
       },
       "package": "com.posapp.epos",
       "permissions": [
